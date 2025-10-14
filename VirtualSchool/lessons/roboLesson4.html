@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>VSchool – Робототехника: Урок 4</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0; background: #f5f7fa; color: #222;
+      min-height: 100vh; display: flex; flex-direction: column;
+    }
+    header {
+      background-color: #2078f4;
+      color: white;
+      padding: 1rem 2rem;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    nav {
+      background-color: #145bb5;
+      padding: 0.5rem 2rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-right: 1.5rem;
+      font-weight: 600;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      flex: 1;
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2, h3 {
+      color: #2078f4;
+      margin-top: 1.5rem;
+    }
+    p, li {
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    ul {
+      padding-left: 1.2rem;
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: Consolas, monospace;
+      font-size: 0.95rem;
+    }
+    footer {
+      background-color: #2078f4;
+      color: white;
+      text-align: center;
+      padding: 1rem 2rem;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .quiz {
+      margin-top: 2rem;
+    }
+    .quiz-question {
+      margin-bottom: 1.2rem;
+    }
+    .quiz-question h4 {
+      margin-bottom: 0.5rem;
+    }
+    .quiz-question label {
+      display: block;
+      margin-left: 1rem;
+      margin-bottom: 0.3rem;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 1.5rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #2078f4;
+    }
+    button {
+      background-color: #2078f4;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #145bb5;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  VSchool — Робототехника: Урок 4
+</header>
+
+<nav>
+  <a href="../lessons.html">Назад к урокам</a>
+  <a href="../index.html">Главная</a>
+</nav>
+
+<main>
+  <h1>Урок 4: Датчики в робототехнике</h1>
+
+  <p>Сегодня мы узнаем, что такое датчики и зачем они нужны роботам.  
+  Без датчиков робот не смог бы видеть, слышать или чувствовать окружающий мир.</p>
+
+  <h2>Что такое датчики?</h2>
+  <p><strong>Датчик</strong> — это устройство, которое измеряет определённый параметр (свет, звук, расстояние, температуру и т.д.) и передаёт информацию в компьютер или контроллер робота.</p>
+
+  <h2>Основные виды датчиков</h2>
+  <ul>
+    <li><strong>Датчик расстояния</strong> — измеряет, как далеко находится объект. Используется, чтобы робот не врезался в препятствия.</li>
+    <li><strong>Датчик линии (инфракрасный)</strong> — помогает следить за линией на полу, например, в соревнованиях роботов-линейщиков.</li>
+    <li><strong>Датчик света</strong> — определяет уровень освещённости. Робот может включить подсветку, если темно.</li>
+    <li><strong>Датчик температуры</strong> — измеряет тепло, используется в исследовательских и медицинских роботах.</li>
+    <li><strong>Датчик звука</strong> — позволяет роботу реагировать на хлопки или голосовые команды.</li>
+    <li><strong>Гироскоп и акселерометр</strong> — помогают удерживать равновесие и измерять движение.</li>
+  </ul>
+
+  <h2>Как работают датчики</h2>
+  <p>Датчик преобразует физический сигнал (например, отражённый свет или звук) в электрический.  
+  Робот анализирует эти данные и принимает решение: повернуть, остановиться или изменить действие.</p>
+
+  <h3>Пример: робот избегает препятствий</h3>
+  <pre>
+1. Датчик расстояния замечает объект впереди.
+2. Контроллер получает сигнал: "Препятствие!"
+3. Робот останавливается и поворачивает в сторону.
+  </pre>
+
+  <h2>Интересный факт</h2>
+  <p>Современные автономные автомобили используют <strong>лидары</strong> — это лазерные датчики, которые создают трёхмерную карту местности вокруг машины.</p>
+
+  <h2>Задание</h2>
+  <p>Подумай, какой датчик ты добавил бы в своего робота. Что бы он измерял и зачем?</p>
+
+  <h2>Проверим знания!</h2>
+
+  <div class="quiz" id="quiz">
+    <div class="quiz-question">
+      <h4>1. Что делает датчик?</h4>
+      <label><input type="radio" name="q1" value="1"> Измеряет параметры окружающей среды</label>
+      <label><input type="radio" name="q1" value="0"> Управляет двигателем</label>
+      <label><input type="radio" name="q1" value="0"> Украшает корпус робота</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>2. Какой датчик помогает роботу избегать столкновений?</h4>
+      <label><input type="radio" name="q2" value="1"> Датчик расстояния</label>
+      <label><input type="radio" name="q2" value="0"> Датчик света</label>
+      <label><input type="radio" name="q2" value="0"> Датчик звука</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>3. Какой датчик помогает роботу следовать по линии?</h4>
+      <label><input type="radio" name="q3" value="1"> Инфракрасный датчик</label>
+      <label><input type="radio" name="q3" value="0"> Датчик температуры</label>
+      <label><input type="radio" name="q3" value="0"> Гироскоп</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>4. Что измеряет датчик звука?</h4>
+      <label><input type="radio" name="q4" value="1"> Громкость или шум</label>
+      <label><input type="radio" name="q4" value="0"> Свет</label>
+      <label><input type="radio" name="q4" value="0"> Расстояние</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>5. Для чего нужен гироскоп в роботе?</h4>
+      <label><input type="radio" name="q5" value="1"> Для определения положения и равновесия</label>
+      <label><input type="radio" name="q5" value="0"> Для измерения температуры</label>
+      <label><input type="radio" name="q5" value="0"> Для измерения расстояния</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>6. Что делает датчик света?</h4>
+      <label><input type="radio" name="q6" value="1"> Определяет уровень освещённости</label>
+      <label><input type="radio" name="q6" value="0"> Измеряет скорость робота</label>
+      <label><input type="radio" name="q6" value="0"> Управляет моторами</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>7. Что делает робот, если датчик расстояния заметил препятствие?</h4>
+      <label><input type="radio" name="q7" value="1"> Останавливается и поворачивает</label>
+      <label><input type="radio" name="q7" value="0"> Ускоряется</label>
+      <label><input type="radio" name="q7" value="0"> Выключается</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>8. Что измеряет датчик температуры?</h4>
+      <label><input type="radio" name="q8" value="1"> Уровень тепла</label>
+      <label><input type="radio" name="q8" value="0"> Расстояние до объекта</label>
+      <label><input type="radio" name="q8" value="0"> Громкость звука</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>9. Какой тип датчика используют для построения 3D-карты местности?</h4>
+      <label><input type="radio" name="q9" value="1"> Лидар</label>
+      <label><input type="radio" name="q9" value="0"> Датчик света</label>
+      <label><input type="radio" name="q9" value="0"> Гироскоп</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>10. Зачем роботам нужны датчики вообще?</h4>
+      <label><input type="radio" name="q10" value="1"> Чтобы понимать и реагировать на окружающий мир</label>
+      <label><input type="radio" name="q10" value="0"> Чтобы быть красивыми</label>
+      <label><input type="radio" name="q10" value="0"> Чтобы экономить энергию</label>
+    </div>
+
+    <button onclick="checkQuiz()">Проверить ответы</button>
+    <div id="result"></div>
+  </div>
+</main>
+
+<footer>
+  &copy; 2025 VSchool. Все права защищены.
+</footer>
+
+<script>
+  function checkQuiz() {
+    const totalQuestions = 10;
+    let score = 0;
+    for (let i = 1; i <= totalQuestions; i++) {
+      const options = document.getElementsByName('q'+i);
+      for (const option of options) {
+        if (option.checked) {
+          score += Number(option.value);
+          break;
+        }
+      }
+    }
+    const resultDiv = document.getElementById('result');
+    resultDiv.textContent = `Вы набрали ${score} из ${totalQuestions} правильных ответов.`;
+  }
+</script>
+
+</body>
+</html>
