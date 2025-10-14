@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Информатика – Урок 5: Алгоритмы с условиями и циклами</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0; background: #f0f4ff; color: #222;
+      min-height: 100vh; display: flex; flex-direction: column;
+    }
+    header {
+      background-color: #005bbb;
+      color: white;
+      padding: 1rem 2rem;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    nav {
+      background-color: #003d99;
+      padding: 0.5rem 2rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-right: 1.5rem;
+      font-weight: 600;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      flex: 1;
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2, h3 {
+      color: #005bbb;
+      margin-top: 1.5rem;
+    }
+    p {
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    pre {
+      background:#f0f0f0;
+      padding:1rem;
+      border-radius:8px;
+      overflow-x: auto;
+      font-size: 0.95rem;
+    }
+    footer {
+      background-color: #005bbb;
+      color: white;
+      text-align: center;
+      padding: 1rem 2rem;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    /* Тест */
+    .quiz {
+      margin-top: 2rem;
+    }
+    .quiz-question {
+      margin-bottom: 1rem;
+    }
+    .quiz-question h4 {
+      margin-bottom: 0.5rem;
+    }
+    .quiz-question label {
+      display: block;
+      margin-left: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    #result {
+      margin-top: 1.5rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    button {
+      background-color: #005bbb;
+      color: white;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    button:hover {
+      background-color: #003d99;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  VSchool — Информатика: Урок 5
+</header>
+
+<nav>
+  <a href="../lessons.html">Назад к урокам</a>
+  <a href="../index.html">Главная</a>
+</nav>
+
+<main>
+  <h1>Урок 5: Алгоритмы с условиями и циклами</h1>
+
+  <p>В этом уроке мы подробно разберём два важных понятия в алгоритмах — условия и циклы. Они помогают создавать более гибкие и мощные алгоритмы, которые могут принимать решения и повторять действия.</p>
+
+  <h2>Что такое условие?</h2>
+  <p>Условие — это проверка, которая позволяет алгоритму выбрать, какой путь выполнить дальше. Обычно условие задаётся в виде вопроса, на который можно ответить "да" или "нет".</p>
+  <p>Например: <em>Если на улице идёт дождь, взять зонт.</em></p>
+  <p>В программировании это выглядит как <strong>оператор if</strong>:</p>
+  <pre>if (дождь) {
+  взять зонт;
+} else {
+  не брать зонт;
+}</pre>
+
+  <h2>Что такое цикл?</h2>
+  <p>Цикл — это способ повторять одно и то же действие несколько раз, пока выполняется определённое условие.</p>
+  <p>Например: <em>Пока не выучил все слова — повторять их.</em></p>
+  <p>В программировании есть разные виды циклов, например, <strong>while</strong> и <strong>for</strong>. Вот пример цикла while:</p>
+  <pre>while (не выучил все слова) {
+  повторять слова;
+}</pre>
+
+  <h2>Почему условия и циклы важны?</h2>
+  <ul>
+    <li>Позволяют алгоритму принимать решения и адаптироваться к разным ситуациям.</li>
+    <li>Дают возможность повторять действия без копирования одного и того же кода много раз.</li>
+    <li>Упрощают и делают алгоритмы более понятными и эффективными.</li>
+  </ul>
+
+  <h2>Пример алгоритма с условием и циклом</h2>
+  <p>Допустим, нам нужно составить алгоритм для проверки пароля и повторного ввода, пока пароль неверный:</p>
+  <ol>
+    <li>Попросить пользователя ввести пароль.</li>
+    <li>Проверить, правильный ли пароль.</li>
+    <li>Если пароль неверный, попросить ввести снова.</li>
+    <li>Если правильный — показать сообщение "Доступ разрешён".</li>
+  </ol>
+  <p>В виде псевдокода это будет:</p>
+  <pre>do {
+  запросить пароль;
+} while (пароль неверный);
+
+показать "Доступ разрешён";</pre>
+
+  <h2>Задание</h2>
+  <p>Попробуй составить свой алгоритм с условием и циклом для любой повседневной задачи. Например:</p>
+  <ul>
+    <li>Проверка наличия школьных принадлежностей перед выходом из дома.</li>
+    <li>Повторение упражнений, пока не будет сделано заданное количество.</li>
+    <li>Проверка, закончился ли заряд телефона, и если да — подключить зарядку.</li>
+  </ul>
+
+  <h2>Переходим к тесту!</h2>
+  <p>Проверь свои знания с помощью теста ниже.</p>
+
+  <div class="quiz" id="quiz">
+    <div class="quiz-question">
+      <h4>1. Что делает условие в алгоритме?</h4>
+      <label><input type="radio" name="q1" value="1"> Выбирает путь выполнения</label>
+      <label><input type="radio" name="q1" value="0"> Повторяет действия</label>
+      <label><input type="radio" name="q1" value="0"> Останавливает программу</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>2. Что такое цикл?</h4>
+      <label><input type="radio" name="q2" value="0"> Проверка условия</label>
+      <label><input type="radio" name="q2" value="1"> Повторение действий</label>
+      <label><input type="radio" name="q2" value="0"> Ветвление алгоритма</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>3. Какой оператор используется для условий в программировании?</h4>
+      <label><input type="radio" name="q3" value="1"> if</label>
+      <label><input type="radio" name="q3" value="0"> for</label>
+      <label><input type="radio" name="q3" value="0"> while</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>4. Какой оператор используется для циклов?</h4>
+      <label><input type="radio" name="q4" value="0"> if</label>
+      <label><input type="radio" name="q4" value="1"> while</label>
+      <label><input type="radio" name="q4" value="0"> else</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>5. Что происходит, если условие в цикле становится ложным?</h4>
+      <label><input type="radio" name="q5" value="1"> Цикл заканчивается</label>
+      <label><input type="radio" name="q5" value="0"> Цикл повторяется</label>
+      <label><input type="radio" name="q5" value="0"> Алгоритм прерывается</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>6. Для чего нужны циклы?</h4>
+      <label><input type="radio" name="q6" value="1"> Чтобы повторять действия</label>
+      <label><input type="radio" name="q6" value="0"> Чтобы выбирать пути</label>
+      <label><input type="radio" name="q6" value="0"> Чтобы останавливать программу</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>7. Что такое оператор else?</h4>
+      <label><input type="radio" name="q7" value="1"> Альтернативный путь в условии</label>
+      <label><input type="radio" name="q7" value="0"> Начало цикла</label>
+      <label><input type="radio" name="q7" value="0"> Повторение цикла</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>8. Что происходит, если условие в if истинно?</h4>
+      <label><input type="radio" name="q8" value="1"> Выполняется код внутри if</label>
+      <label><input type="radio" name="q8" value="0"> Пропускается код</label>
+      <label><input type="radio" name="q8" value="0"> Начинается цикл</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>9. Как называется цикл, который выполняется, пока условие истинно?</h4>
+      <label><input type="radio" name="q9" value="1"> while</label>
+      <label><input type="radio" name="q9" value="0"> if</label>
+      <label><input type="radio" name="q9" value="0"> else</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>10. Что важно помнить при использовании циклов и условий?</h4>
+      <label><input type="radio" name="q10" value="1"> Чётко прописывать условия и контролировать выход из цикла</label>
+      <label><input type="radio" name="q10" value="0"> Использовать только циклы</label>
+      <label><input type="radio" name="q10" value="0"> Не проверять условия</label>
+    </div>
+
+    <button onclick="checkAnswers()">Проверить ответы</button>
+    <div id="result"></div>
+  </div>
+
+</main>
+
+<footer>
+  &copy; 2025 VSchool. Все права защищены.
+</footer>
+
+<script>
+  function checkAnswers() {
+    const correctAnswers = ["1","1","1","1","1","1","1","1","1","1"];
+    let score = 0;
+
+    for (let i = 1; i <= 10; i++) {
+      const radios = document.getElementsByName("q" + i);
+      for (const radio of radios) {
+        if (radio.checked && radio.value === "1") {
+          score++;
+        }
+      }
+    }
+
+    const result = document.getElementById("result");
+    result.innerText = `Вы ответили правильно на ${score} из 10 вопросов. ${score >= 7 ? "Отлично!" : "Попробуй ещё раз!"}`;
+  }
+</script>
+
+</body>
+</html>
