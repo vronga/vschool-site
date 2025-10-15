@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>VSchool — Добавить урок</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: #f5f7fa;
+      color: #222;
+    }
+    h1 {
+      color: #2078f4;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    button {
+      background-color: #2078f4;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    button:hover {
+      background-color: #145bb5;
+    }
+    .test-block {
+      margin-top: 2rem;
+      padding: 1rem;
+      border: 1px solid #2078f4;
+      border-radius: 10px;
+      background: #e6f0ff;
+    }
+    .test-question {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #ccc;
+    }
+    .test-question:last-child {
+      border-bottom: none;
+    }
+    .answers label {
+      display: block;
+      margin-left: 1rem;
+      margin-bottom: 0.4rem;
+      cursor: pointer;
+    }
+    .answers input[type="text"] {
+      width: auto;
+      padding: 0.3rem 0.5rem;
+      margin-left: 0.3rem;
+      font-size: 0.95rem;
+    }
+    .remove-question-btn {
+      background: #b00;
+      margin-top: 0.5rem;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.85rem;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+    .remove-question-btn:hover {
+      background: #900;
+    }
+    hr {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      border: none;
+      border-top: 1px solid #ccc;
+    }
+    /* Стили для списка уроков с группировкой по предметам */
+    .subject-block {
+      margin-bottom: 2rem;
+      border: 1px solid #2078f4;
+      border-radius: 10px;
+      background: #e9f1ff;
+    }
+    .subject-header {
+      background: #2078f4;
+      color: white;
+      padding: 0.5rem 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+      border-radius: 10px 10px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .subject-header .toggle-icon {
+      font-weight: normal;
+      font-size: 1.2rem;
+      user-select: none;
+      transition: transform 0.3s ease;
+    }
+    .subject-header.collapsed .toggle-icon {
+      transform: rotate(-90deg);
+    }
+    .subject-lessons {
+      padding: 0.8rem 1rem;
+      display: block;
+    }
+    .lesson-item {
+      padding: 0.6rem;
+      background: #eef4ff;
+      margin-bottom: 0.4rem;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .lesson-item span.title {
+      font-weight: 600;
+      color: #2078f4;
+    }
+    .lesson-item button.delete-btn {
+      background: #d33;
+      border: none;
+      color: white;
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+    .lesson-item button.delete-btn:hover {
+      background: #a00;
+    }
+  </style>
+</head>
+<body>
+
+    <div id="authOverlay" style="
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+">
+  <div style="
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    max-width: 300px;
+    width: 90%;
+    text-align: center;
+  ">
+    <h2>Авторизация</h2>
+    <input type="text" id="authName" placeholder="Имя" style="margin-bottom: 1rem; width: 100%; padding: 0.5rem;" />
+    <input type="password" id="authPass" placeholder="Пароль" style="margin-bottom: 1rem; width: 100%; padding: 0.5rem;" />
+    <button onclick="checkAuth()" style="padding: 0.5rem 1rem;">Войти</button>
+    <p id="authError" style="color: red; margin-top: 0.5rem; display: none;">Неверный пароль</p>
+  </div>
+</div>
+
+
+<h1>Добавить новый урок</h1>
+
+<form id="lessonForm">
+  <label for="title">Название урока *</label>
+  <input type="text" id="title" name="title" required />
+
+  <label for="description">Описание</label>
+  <textarea id="description" name="description"></textarea>
+
+  <label for="content">Содержание (HTML разрешён)</label>
+  <textarea id="content" name="content"></textarea>
+
+  <label for="image">URL изображения (опционально)</label>
+  <input type="text" id="image" name="image" placeholder="https://example.com/image.jpg" />
+
+  <label for="video">URL видео (YouTube, Vimeo или видеофайл) (опционально)</label>
+  <input type="text" id="video" name="video" placeholder="https://youtube.com/..." />
+
+  <label for="subject">Предмет *</label>
+  <select id="subject" name="subject" required>
+    <option value="">Выберите предмет</option>
+    <option value="informatics">Информатика</option>
+    <option value="robotics">Робототехника</option>
+    <option value="biology">Биология</option>
+    <option value="geography">География</option>
+  </select>
+
+  <h2>Тест к уроку (опционально)</h2>
+
+  <div id="testQuestionsContainer" class="test-block">
+    <!-- Вопросы будут добавляться сюда -->
+  </div>
+
+  <button type="button" id="addQuestionBtn">Добавить вопрос</button>
+
+  <br/>
+  <button type="submit">Сохранить урок</button>
+</form>
+
+<hr />
+
+<h2>Список уроков по предметам</h2>
+<div id="lessonsBySubject"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+<script>
+  // Инициализация Supabase
+  const supabaseUrl = 'https://oyzumzmidcegpbewhzcm.supabase.co'; // твой URL
+  const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95enVtem1pZGNlZ3BiZXdoemNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0OTk5OTYsImV4cCI6MjA3NjA3NTk5Nn0.fndukbDPx_QjU_DqW54oXarqo2d1xru8oWw5yuplLMo'; // anon key из панели Supabase
+  const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+  const lessonForm = document.getElementById('lessonForm');
+  const testQuestionsContainer = document.getElementById('testQuestionsContainer');
+  const addQuestionBtn = document.getElementById('addQuestionBtn');
+  const lessonsBySubject = document.getElementById('lessonsBySubject');
+
+  // Локальный кэш уроков
+  let lessons = [];
+
+  // Загрузка уроков из Supabase
+  async function loadLessonsFromSupabase() {
+    const { data, error } = await supabase
+      .from('lessons')
+      .select('*')
+      .order('id', { ascending: true });
+
+    if (error) {
+      alert('Ошибка загрузки уроков: ' + error.message);
+      return;
+    }
+    lessons = data || [];
+  }
+
+  // Добавление урока в Supabase
+  async function addLessonToSupabase(lesson) {
+    const { error } = await supabase
+      .from('lessons')
+      .insert([lesson]);
+
+    if (error) {
+      alert('Ошибка добавления урока: ' + error.message);
+      return false;
+    }
+    return true;
+  }
+
+  // Создание элемента вопроса
+  function createQuestionElement(question = {question: '', answers: [{text:'', correct:false},{text:'', correct:false}]}) {
+    const div = document.createElement('div');
+    div.classList.add('test-question');
+
+    div.innerHTML = `
+      <label>Вопрос:
+        <input type="text" class="question-text" placeholder="Текст вопроса" value="${escapeHtml(question.question)}" required />
+      </label>
+      <div class="answers">
+        <p>Ответы (отметьте правильные):</p>
+        ${question.answers.map((a, i) => `
+          <label>
+            <input type="checkbox" class="answer-correct" ${a.correct ? 'checked' : ''} />
+            <input type="text" class="answer-text" placeholder="Текст ответа" value="${escapeHtml(a.text)}" required />
+          </label>
+        `).join('')}
+      </div>
+      <button type="button" class="remove-question-btn">Удалить вопрос</button>
+    `;
+
+    div.querySelector('.remove-question-btn').onclick = () => {
+      div.remove();
+    };
+
+    return div;
+  }
+
+  addQuestionBtn.onclick = () => {
+    const questionElement = createQuestionElement();
+    testQuestionsContainer.appendChild(questionElement);
+  };
+
+  // Экранируем HTML
+  function escapeHtml(text) {
+    return text.replace(/[&<>"']/g, function(m) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[m];
+    });
+  }
+
+  // Отрисовка уроков по предметам из массива lessons
+  function renderLessonsBySubject() {
+    if (lessons.length === 0) {
+      lessonsBySubject.innerHTML = '<p>Уроки ещё не созданы.</p>';
+      return;
+    }
+
+    const grouped = {};
+    for (const lesson of lessons) {
+      const subj = lesson.subject || 'other';
+      if (!grouped[subj]) grouped[subj] = [];
+      grouped[subj].push(lesson);
+    }
+
+    const subjectNames = {
+      informatics: 'Информатика',
+      robotics: 'Робототехника',
+      biology: 'Биология',
+      geography: 'География',
+    };
+
+    lessonsBySubject.innerHTML = '';
+
+    for (const subject in grouped) {
+      const block = document.createElement('div');
+      block.className = 'subject-block';
+
+      const header = document.createElement('div');
+      header.className = 'subject-header';
+      header.innerHTML = `
+        <span>${subjectNames[subject] || subject}</span>
+        <span class="toggle-icon">&#9660;</span>
+      `;
+      block.appendChild(header);
+
+      const lessonsContainer = document.createElement('div');
+      lessonsContainer.className = 'subject-lessons';
+
+      grouped[subject].forEach((lesson, idx) => {
+        const lessonDiv = document.createElement('div');
+        lessonDiv.className = 'lesson-item';
+
+        lessonDiv.innerHTML = `
+          <span class="title">${lesson.title || 'Без названия'}</span>
+          <button class="delete-btn">Удалить</button>
+        `;
+
+        lessonDiv.querySelector('.delete-btn').onclick = async () => {
+          if (confirm(`Удалить урок "${lesson.title}"?`)) {
+            // Удаляем из базы по id (предполагается, что есть поле id)
+            const { error } = await supabase
+              .from('lessons')
+              .delete()
+              .eq('id', lesson.id);
+
+            if (error) {
+              alert('Ошибка удаления: ' + error.message);
+              return;
+            }
+
+            // Обновляем локальный кэш и UI
+            lessons = lessons.filter(l => l.id !== lesson.id);
+            renderLessonsBySubject();
+          }
+        };
+
+        lessonsContainer.appendChild(lessonDiv);
+      });
+
+      block.appendChild(lessonsContainer);
+      lessonsBySubject.appendChild(block);
+
+      header.onclick = () => {
+        const isCollapsed = lessonsContainer.style.display === 'none';
+        lessonsContainer.style.display = isCollapsed ? 'block' : 'none';
+        header.classList.toggle('collapsed', !isCollapsed);
+      };
+    }
+  }
+
+  // Обработка отправки формы
+  lessonForm.onsubmit = async (e) => {
+    e.preventDefault();
+
+    const title = lessonForm.title.value.trim();
+    if (!title) {
+      alert('Название урока обязательно');
+      return;
+    }
+
+    const description = lessonForm.description.value.trim();
+    const content = lessonForm.content.value.trim();
+    const image = lessonForm.image.value.trim();
+    const video = lessonForm.video.value.trim();
+    const subject = lessonForm.subject.value;
+
+    if (!subject) {
+      alert('Пожалуйста, выберите предмет');
+      return;
+    }
+
+    const questionsDivs = [...testQuestionsContainer.querySelectorAll('.test-question')];
+    const test = {questions: []};
+    for (const qDiv of questionsDivs) {
+      const questionText = qDiv.querySelector('.question-text').value.trim();
+      if (!questionText) {
+        alert('Текст вопроса не может быть пустым');
+        return;
+      }
+
+      const answerLabels = [...qDiv.querySelectorAll('.answers label')];
+      const answers = [];
+
+      for (const label of answerLabels) {
+        const answerTextInput = label.querySelector('.answer-text');
+        const answerCorrectCheckbox = label.querySelector('.answer-correct');
+
+        const answerText = answerTextInput.value.trim();
+        if (!answerText) {
+          alert('Текст ответа не может быть пустым');
+          return;
+        }
+        answers.push({
+          text: answerText,
+          correct: answerCorrectCheckbox.checked
+        });
+      }
+
+      if (!answers.some(a => a.correct)) {
+        alert('В вопросе "' + questionText + '" должен быть хотя бы один правильный ответ.');
+        return;
+      }
+
+      test.questions.push({question: questionText, answers});
+    }
+
+    const newLesson = {
+      title,
+      description,
+      content,
+      image,
+      video,
+      subject,
+      test: test.questions.length ? test : null
+    };
+
+    const success = await addLessonToSupabase(newLesson);
+    if (!success) return;
+
+    alert('Урок успешно добавлен!');
+
+    lessonForm.reset();
+    testQuestionsContainer.innerHTML = '';
+
+    await loadLessonsFromSupabase();
+    renderLessonsBySubject();
+  };
+
+  // Проверка авторизации (без изменений)
+  const correctPassword = '44191033';
+
+  function checkAuth() {
+    const inputPass = document.getElementById('authPass').value;
+    if (inputPass === correctPassword) {
+      localStorage.setItem('vschoolAuth', 'true');
+      document.getElementById('authOverlay').style.display = 'none';
+    } else {
+      document.getElementById('authError').style.display = 'block';
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', async () => {
+    const isAuthed = localStorage.getItem('vschoolAuth') === 'true';
+    if (!isAuthed) {
+      document.getElementById('authOverlay').style.display = 'flex';
+    } else {
+      document.getElementById('authOverlay').style.display = 'none';
+      await loadLessonsFromSupabase();
+      renderLessonsBySubject();
+    }
+  });
+</script>
+
+
+</body>
+</html>
