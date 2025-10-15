@@ -477,28 +477,35 @@
     await loadLessonsFromSupabase();
     renderLessonsBySubject();
   };
-  
-const correctPassword = '44191033';
 
-function checkAuth() {
-  const inputPass = document.getElementById('authPass').value;
+  // Проверка авторизации (без изменений)
+  // Проверка авторизации
+  const correctPassword = '44191033';
+
+  function checkAuth() {
+  const inputPass = document.getElementById('authPass').value.trim();
+  const correctPassword = '44191033';
+  const authError = document.getElementById('authError');
+
   if (inputPass === correctPassword) {
     localStorage.setItem('vschoolAuth', 'true');
     document.getElementById('authOverlay').style.display = 'none';
-    document.getElementById('authError').style.display = 'none';
+    authError.style.display = 'none';
   } else {
-    document.getElementById('authError').style.display = 'block';
+    authError.style.display = 'block';
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  const isAuthed = localStorage.getItem('vschoolAuth') === 'true';
-  if (!isAuthed) {
-    document.getElementById('authOverlay').style.display = 'flex';
-  } else {
-    document.getElementById('authOverlay').style.display = 'none';
-  }
-});
+
+  // При загрузке страницы
+  window.addEventListener('DOMContentLoaded', () => {
+    const isAuthed = localStorage.getItem('vschoolAuth') === 'true';
+    if (!isAuthed) {
+      document.getElementById('authOverlay').style.display = 'flex';
+    } else {
+      document.getElementById('authOverlay').style.display = 'none';
+    }
+  });
 
 </script>
 
