@@ -1,1703 +1,319 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <title>VSchool — Добавить урок</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <title>VSchool – Уроки</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 900px; margin: 2rem auto; padding: 1rem; background: #f5f7fa; color:#222; }
-    h1 { color:#2078f4; margin-bottom:0.6rem }
-    label { display:block; margin-top:0.8rem; font-weight:600 }
-    input[type="text"], input[type="password"], textarea, select {
-      width:100%; padding:0.5rem; font-size:1rem; margin-top:0.3rem; border:1px solid #ccc; border-radius:8px; box-sizing:border-box;
-      background: #fff;
+    * {
+      box-sizing: border-box;
     }
-    textarea { min-height:100px; resize:vertical }
-    .btn { background:#2078f4; color:#fff; border:none; padding:0.6rem 1.1rem; border-radius:8px; cursor:pointer; margin-top:1rem; font-size:1rem; transition: background-color .2s; }
-    .btn:hover { background:#145bb5 }
-    .secondary { background:#e6f0ff; color:#08306b; border:1px solid #cfe0ff; }
-    .test-block { margin-top:1rem; padding:1rem; border:1px solid #d6e8ff; border-radius:10px; background:#fbfdff }
-    .test-question { margin-bottom:1rem; padding-bottom:0.8rem; border-bottom:1px solid #eee }
-    .remove-question-btn { background:#b00; color:#fff; padding:0.25rem 0.6rem; border-radius:6px; border:none; cursor:pointer; margin-top:0.5rem }
-    hr { margin:1.6rem 0; border-top:1px solid #e0e6ef; border:none }
-    .subject-block { margin-bottom:1rem; border:1px solid #d6e8ff; border-radius:10px; background:#fff }
-    .subject-header { background:#2078f4; color:#fff; padding:0.6rem 1rem; font-weight:700; display:flex; justify-content:space-between; align-items:center; cursor:pointer; border-radius:10px 10px 0 0 }
-    .subject-lessons { padding:0.6rem 1rem; display:block }
-    .lesson-item { padding:0.6rem; background:#fbfdff; margin-bottom:0.5rem; border-radius:6px; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 1px 0 rgba(32,120,244,0.04) }
-    .lesson-item .title { font-weight:600; color:#1b61d6 }
-    .delete-btn { background:#d33; color:#fff; padding:0.3rem 0.7rem; border-radius:6px; border:none; cursor:pointer }
-    /* auth overlay */
-    #authOverlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.55); backdrop-filter: blur(4px); display:flex; align-items:center; justify-content:center; z-index:9999; }
-    #authBox { background:#fff; padding:1.6rem; border-radius:10px; box-shadow:0 8px 30px rgba(0,0,0,0.3); max-width:360px; width:92%; text-align:center }
-    #authError { color:#b00; margin-top:0.5rem; display:none; }
-    .shake { animation: shake 320ms; }
-    @keyframes shake { 0%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}100%{transform:translateX(0)} }
-    .small { font-size:0.9rem; color:#666 }
-    .answers label { display:block; margin-left:0.2rem; margin-bottom:0.4rem; }
-    .answers input[type="text"] { width: calc(100% - 28px); margin-left: 6px; padding: 0.25rem 0.4rem; font-size:0.95rem; border-radius:6px; border:1px solid #ddd }
-    .controls { display:flex; gap:0.6rem; justify-content:center; flex-wrap:wrap }
-    .muted { color:#666; font-size:0.9rem }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e0ebff, #f7f9ff);
+      color: #222;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    a {
+      color: #005bbb;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+      background-color: #005bbb;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    header .logo {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      user-select: none;
+      cursor: default;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: 2rem;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    nav ul li a {
+      color: white;
+      transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #ffcc00;
+    }
+
+    /* ---------- LESSONS SECTION ---------- */
+    main.lessons-container {
+      flex: 1;
+      display: flex;
+      padding: 2rem 3rem;
+      gap: 2rem;
+      background-color: #f0f4ff;
+      box-sizing: border-box;
+    }
+
+    aside.subjects-menu {
+      width: 240px;
+      background-color: #e6ecff;
+      border-radius: 12px;
+      padding: 1.5rem 1.2rem;
+      overflow-y: auto;
+      height: calc(100vh - 124px);
+      box-sizing: border-box;
+      box-shadow: inset 2px 2px 8px rgba(0,0,0,0.05);
+      user-select: none;
+    }
+
+    aside.subjects-menu h3 {
+      margin-top: 0;
+      margin-bottom: 1.2rem;
+      color: #003d99;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    aside.subjects-menu button {
+      width: 100%;
+      background-color: #005bbb;
+      border: none;
+      color: white;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.8rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s, box-shadow 0.3s;
+      font-weight: 700;
+      box-shadow: 0 3px 6px rgba(0,91,187,0.4);
+      user-select: none;
+    }
+
+    aside.subjects-menu button:hover,
+    aside.subjects-menu button:focus {
+      background-color: #003d99;
+      box-shadow: 0 5px 12px rgba(0,61,153,0.7);
+      outline: none;
+    }
+
+    .lessons-content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 1.8rem;
+      overflow-y: auto;
+      max-height: calc(100vh - 124px);
+      padding-right: 1rem;
+      scroll-behavior: smooth;
+    }
+
+    .lesson-box {
+      border: 1.5px solid #ccc;
+      border-radius: 14px;
+      background-color: white;
+      overflow: hidden;
+      box-shadow: 0 3px 9px rgba(0,0,0,0.07);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      height: 260px;
+      user-select: none;
+    }
+
+    .lesson-box:hover {
+      transform: scale(1.06);
+      box-shadow: 0 9px 22px rgba(0,0,0,0.18);
+      border-color: #005bbb;
+    }
+
+    .lesson-box img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-bottom: 1px solid #ddd;
+      user-select: none;
+      pointer-events: none;
+      transition: transform 0.3s ease;
+    }
+
+    .lesson-box:hover img {
+      transform: scale(1.05);
+    }
+
+    .lesson-info {
+      padding: 1rem 1.2rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .lesson-info h4 {
+      margin: 0 0 0.6rem 0;
+      font-size: 1.25rem;
+      color: #005bbb;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .lesson-info p {
+      margin: 0;
+      font-size: 1rem;
+      color: #444;
+      line-height: 1.3;
+      font-weight: 500;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      background-color: #003d99;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      font-size: 0.9rem;
+      box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* ---------- SCROLLBARS ---------- */
+    .lessons-content::-webkit-scrollbar,
+    aside.subjects-menu::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .lessons-content::-webkit-scrollbar-thumb,
+    aside.subjects-menu::-webkit-scrollbar-thumb {
+      background-color: #005bbb88;
+      border-radius: 10px;
+    }
+
+    .lessons-content::-webkit-scrollbar-track,
+    aside.subjects-menu::-webkit-scrollbar-track {
+      background-color: #e6ecff;
+    }
+
+    @media (max-width: 600px) {
+      nav ul {
+        gap: 1rem;
+        font-size: 0.9rem;
+      }
+      main.lessons-container {
+        flex-direction: column;
+        padding: 1rem;
+      }
+      aside.subjects-menu {
+        width: 100%;
+        height: auto;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <!-- 🔒 Авторизация -->
-  <div id="authOverlay" aria-hidden="false">
-    <div id="authBox" role="dialog" aria-modal="true">
-      <h2>Авторизация</h2>
-      <input type="text" id="authName" placeholder="Имя" style="margin-top:0.6rem;" />
-      <input type="password" id="authPass" placeholder="Пароль" style="margin-top:0.6rem;" />
-      <div class="controls" style="margin-top:0.8rem;">
-        <button id="loginBtn" class="btn">Войти</button>
-        <button id="demoBtn" class="btn secondary" title="Прим. заполнение">Demo</button>
-      </div>
-      <p id="authError">Неверный пароль</p>
-      <p class="small" style="margin-top:0.6rem">Подсказка: пароль — <code>44191033</code></p>
-    </div>
+  <div class="wrapper">
+    <header>
+      <h1 class="logo">VSchool</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="addlesson.html">Добавить урок</a></li>
+          <li><a href="addlessons.html">Уроки</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="lessons-container">
+      <aside class="subjects-menu">
+        <h3>Предметы</h3>
+        <button onclick="filterLessons('all')">Все уроки</button>
+        <button onclick="filterLessons('informatics')">Информатика</button>
+        <button onclick="filterLessons('robotics')">Робототехника</button>
+        <button onclick="filterLessons('biology')">Биология</button>
+        <button onclick="filterLessons('geography')">География</button>
+      </aside>
+
+      <section class="lessons-content" id="lessonsContainer">
+        <!-- Уроки будут загружены сюда -->
+      </section>
+    </main>
+
+    <footer>
+      © 2025 VSchool — Все права защищены
+    </footer>
   </div>
 
-  <h1>Добавить новый урок</h1>
-
-  <form id="lessonForm">
-    <label for="title">Название урока *</label>
-    <input type="text" id="title" name="title" required />
-
-    <label for="description">Описание</label>
-    <textarea id="description" name="description"></textarea>
-
-    <label for="content">Содержание (HTML разрешён)</label>
-    <textarea id="content" name="content"></textarea>
-
-    <label for="image">URL изображения (опционально)</label>
-    <input type="text" id="image" name="image" placeholder="https://example.com/image.jpg" />
-
-    <label for="video">URL видео (опционально)</label>
-    <input type="text" id="video" name="video" placeholder="https://youtube.com/..." />
-
-    <label for="subject">Предмет *</label>
-    <select id="subject" name="subject" required>
-      <option value="">Выберите предмет</option>
-      <option value="informatics">Информатика</option>
-      <option value="robotics">Робототехника</option>
-      <option value="biology">Биология</option>
-      <option value="geography">География</option>
-    </select>
-
-    <h2 style="margin-top:1rem">Тест к уроку (опционально)</h2>
-    <div id="testQuestionsContainer" class="test-block"></div>
-    <div style="margin-top:0.6rem;">
-      <button type="button" id="addQuestionBtn" class="btn secondary">Добавить вопрос</button>
-    </div>
-
-    <button type="submit" id="saveLessonBtn" class="btn" style="display:block;">Сохранить урок</button>
-  </form>
-
-  <hr />
-
-  <h2>Список уроков по предметам</h2>
-  <div id="lessonsBySubject"></div>
-
-  <!-- ⚙️ Скрипт -->
   <script>
-    (function(){
-      const CORRECT = '44191033';
-      const STORAGE_KEY = 'vsLessons';
-
-      const authOverlay = document.getElementById('authOverlay');
-      const authPass = document.getElementById('authPass');
-      const loginBtn = document.getElementById('loginBtn');
-      const demoBtn = document.getElementById('demoBtn');
-      const authError = document.getElementById('authError');
-
-      const form = document.getElementById('lessonForm');
-      const questionsContainer = document.getElementById('testQuestionsContainer');
-      const lessonsBySubject = document.getElementById('lessonsBySubject');
-
-      let lessons = [];
-
-      // ========== Helpers ==========
-      const saveLessons = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(lessons));
-      const loadLessons = () => lessons = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-      const escapeHtml = t => t?.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])) || '';
-
-      // ========== Авторизация ==========
-      function setAuthOverlay(show){
-        authOverlay.style.display = show ? 'flex' : 'none';
-        authOverlay.setAttribute('aria-hidden', show ? 'false' : 'true');
-      }
-      function showAuthError(){
-        authError.style.display = 'block';
-        const box = document.getElementById('authBox');
-        box.classList.remove('shake');
-        void box.offsetWidth;
-        box.classList.add('shake');
-        setTimeout(()=> authError.style.display = 'none', 2500);
-      }
-      function attemptLogin(){
-        const pass = authPass.value.trim();
-        if (pass === CORRECT) {
-          localStorage.setItem('vschoolAuth','true');
-          setAuthOverlay(false);
-        } else showAuthError();
-      }
-
-      // ========== Тестовые вопросы ==========
-      function createQuestionElement(existing){
-        const div = document.createElement('div');
-        div.className = 'test-question';
-        const qText = existing?.question || '';
-        const answers = existing?.answers || [{text:'', correct:false}, {text:'', correct:false}];
-
-        div.innerHTML = `
-          <label>Вопрос:
-            <input type="text" class="question-text" placeholder="Текст вопроса" required value="${escapeHtml(qText)}" />
-          </label>
-          <div class="answers">
-            <p class="small">Ответы (отметьте правильные):</p>
-            <div class="answers-list"></div>
-            <div style="margin-top:0.4rem; display:flex; gap:0.5rem;">
-              <button type="button" class="btn add-answer-btn secondary">Добавить ответ</button>
-              <button type="button" class="btn remove-question-btn" title="Удалить вопрос">Удалить вопрос</button>
-            </div>
-          </div>
-        `;
-
-        const answersList = div.querySelector('.answers-list');
-        function addAnswerField(ans){
-          const wrap = document.createElement('label');
-          const checked = ans.correct ? 'checked' : '';
-          wrap.innerHTML = `<input type="checkbox" class="answer-correct" ${checked}/> 
-            <input type="text" class="answer-text" placeholder="Ответ" required value="${escapeHtml(ans.text)}"/> 
-            <button type="button" class="btn delete-answer-btn" style="background:#f5f5f5;color:#333;padding:0.18rem 0.45rem;border-radius:6px;border:1px solid #ddd;margin-left:6px;">✕</button>`;
-          wrap.querySelector('.delete-answer-btn').onclick = () => wrap.remove();
-          answersList.appendChild(wrap);
-        }
-        answers.forEach(addAnswerField);
-        div.querySelector('.add-answer-btn').onclick = () => addAnswerField({text:'', correct:false});
-        div.querySelector('.remove-question-btn').onclick = () => div.remove();
-        return div;
-      }
-
-      // ========== Отрисовка уроков ==========
-      function renderLessonsBySubject(){
-        lessonsBySubject.innerHTML = '';
-        if (!lessons.length) {
-          lessonsBySubject.innerHTML = '<p class="muted">Уроки ещё не созданы.</p>';
-          return;
-        }
-        const grouped = {};
-        for (const lesson of lessons) {
-          const subj = lesson.subject || 'other';
-          (grouped[subj] ||= []).push(lesson);
-        }
-        const subjectNames = { informatics:"Информатика", robotics:"Робототехника", biology:"Биология", geography:"География", other:"Прочее" };
-        for (const subject in grouped) {
-          const block = document.createElement('div');
-          block.className = 'subject-block';
-          const header = document.createElement('div');
-          header.className = 'subject-header';
-          header.innerHTML = `<span>${subjectNames[subject] || subject}</span><span class="toggle-icon">&#9660;</span>`;
-          const list = document.createElement('div');
-          list.className = 'subject-lessons';
-
-          grouped[subject].forEach(lesson => {
-            const item = document.createElement('div');
-            item.className = 'lesson-item';
-            item.innerHTML = `
-              <div>
-                <div class="title">${escapeHtml(lesson.title)}</div>
-                ${lesson.description ? `<div class="small">${escapeHtml(lesson.description)}</div>` : ''}
-              </div>
-              <button class="delete-btn">Удалить</button>
-            `;
-            item.querySelector('.delete-btn').onclick = (e) => {
-              e.stopPropagation();
-              if (!confirm('Удалить урок?')) return;
-              lessons = lessons.filter(l => l._id !== lesson._id);
-              saveLessons();
-              renderLessonsBySubject();
-            };
-            item.onclick = () => showLessonPreview(lesson);
-            list.appendChild(item);
-          });
-          header.onclick = () => list.style.display = (list.style.display === 'none') ? 'block' : 'none';
-          block.append(header, list);
-          lessonsBySubject.append(block);
-        }
-      }
-
-      function showLessonPreview(lesson){
-        const overlay = document.createElement('div');
-        overlay.style = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:10000;padding:16px;';
-        const box = document.createElement('div');
-        box.style = 'background:#fff;max-width:900px;width:100%;max-height:90vh;overflow:auto;border-radius:10px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,0.4);';
-        box.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <h3>${escapeHtml(lesson.title)}</h3>
-            <button class="btn">Закрыть</button>
-          </div>
-          <p class="small">${escapeHtml(lesson.description)}</p>
-          ${lesson.image ? `<img src="${escapeHtml(lesson.image)}" style="max-width:200px;border-radius:8px;margin-top:8px;">` : ''}
-          <div style="margin-top:12px">${lesson.content}</div>
-        `;
-        overlay.appendChild(box);
-        document.body.appendChild(overlay);
-        box.querySelector('button').onclick = () => overlay.remove();
-        overlay.onclick = e => e.target === overlay && overlay.remove();
-      }
-
-      // ========== Сохранение формы ==========
-      function collectFormData(){
-        const lesson = {
-          _id: 'id_' + Date.now() + '_' + Math.random().toString(36).slice(2,8),
-          title: document.getElementById('title').value.trim(),
-          description: document.getElementById('description').value.trim(),
-          content: document.getElementById('content').value.trim(),
-          image: document.getElementById('image').value.trim(),
-          video: document.getElementById('video').value.trim(),
-          subject: document.getElementById('subject').value || 'other',
-          test: []
-        };
-        const qBlocks = questionsContainer.querySelectorAll('.test-question');
-        for (const q of qBlocks) {
-          const questionText = q.querySelector('.question-text').value.trim();
-          const answers = Array.from(q.querySelectorAll('.answers-list label')).map(l => ({
-            text: l.querySelector('.answer-text').value.trim(),
-            correct: l.querySelector('.answer-correct').checked
-          })).filter(a => a.text);
-          if (questionText && answers.length) lesson.test.push({ question: questionText, answers });
-        }
-        return lesson;
-      }
-
-      // ========== Init ==========
-      document.addEventListener('DOMContentLoaded', () => {
-        loadLessons();
-        renderLessonsBySubject();
-
-        const isAuthed = localStorage.getItem('vschoolAuth') === 'true';
-        setAuthOverlay(!isAuthed);
-
-        authPass.addEventListener('keydown', e => e.key === 'Enter' && attemptLogin());
-        loginBtn.addEventListener('click', attemptLogin);
-        demoBtn.addEventListener('click', () => {
-          document.getElementById('authName').value = 'Teacher';
-          document.getElementById('authPass').value = CORRECT;
-        });
-
-        document.getElementById('addQuestionBtn').addEventListener('click', () => {
-          questionsContainer.appendChild(createQuestionElement());
-        });
-
-        form.addEventListener('submit', e => {
-          e.preventDefault();
-          if (localStorage.getItem('vschoolAuth') !== 'true') {
-            alert('Сначала авторизуйтесь!');
-            setAuthOverlay(true);
-            return;
-          }
-          const lesson = collectFormData();
-          if (!lesson.title) return alert('Введите заголовок урока');
-          lessons.push(lesson);
-          saveLessons();
-          form.reset();
-          questionsContainer.innerHTML = '';
-          renderLessonsBySubject();    .answers input[type="text"] { width: calc(100% - 28px); margin-left: 6px; padding: 0.25rem 0.4rem; font-size:0.95rem; border-radius:6px; border:1px solid #ddd }
-    .controls { display:flex; gap:0.6rem; justify-content:center; flex-wrap:wrap }
-    .muted { color:#666; font-size:0.9rem }
-  </style>
-</head>
-<body>
-  <div id="authOverlay" aria-hidden="false">
-    <div id="authBox" role="dialog" aria-modal="true">
-      <h2>Авторизация</h2>
-      <input type="text" id="authName" placeholder="Имя" style="margin-top:0.6rem;"/>
-      <input type="password" id="authPass" placeholder="Пароль" style="margin-top:0.6rem;" />
-      <div class="controls" style="margin-top:0.8rem;">
-        <button id="loginBtn" class="btn">Войти</button>
-        <button id="demoBtn" class="btn secondary" title="Прим. заполнение">Demo</button>
-      </div>
-      <p id="authError">Неверный пароль</p>
-      <p class="small" style="margin-top:0.6rem">Подсказка: пароль — <code>44191033</code></p>
-    </div>
-  </div>
-
-  <h1>Добавить новый урок</h1>
-
-  <form id="lessonForm">
-    <label for="title">Название урока *</label>
-    <input type="text" id="title" name="title" required />
-    <label for="description">Описание</label>
-    <textarea id="description" name="description"></textarea>
-    <label for="content">Содержание (HTML разрешён)</label>
-    <textarea id="content" name="content"></textarea>
-    <label for="image">URL изображения (опционально)</label>
-    <input type="text" id="image" name="image" placeholder="https://example.com/image.jpg" />
-    <label for="video">URL видео (опционально)</label>
-    <input type="text" id="video" name="video" placeholder="https://youtube.com/..." />
-    <label for="subject">Предмет *</label>
-    <select id="subject" name="subject" required>
-      <option value="">Выберите предмет</option>
-      <option value="informatics">Информатика</option>
-      <option value="robotics">Робототехника</option>
-      <option value="biology">Биология</option>
-      <option value="geography">География</option>
-    </select>
-
-    <h2 style="margin-top:1rem">Тест к уроку (опционально)</h2>
-    <div id="testQuestionsContainer" class="test-block"></div>
-    <div style="margin-top:0.6rem;">
-      <button type="button" id="addQuestionBtn" class="btn secondary">Добавить вопрос</button>
-    </div>
-
-    <button type="submit" id="saveLessonBtn" class="btn" style="display:block;">Сохранить урок</button>
-  </form>
-
-  <hr />
-  <h2>Список уроков по предметам</h2>
-  <div id="lessonsBySubject"></div>
-
-  <script>
-  (function(){
-    // ------------ constants and refs ------------
-    const CORRECT = '44191033';
-    const STORAGE_KEY = 'vsLessons';
-    const authOverlay = document.getElementById('authOverlay');
-    const authPass = document.getElementById('authPass');
-    const loginBtn = document.getElementById('loginBtn');
-    const demoBtn = document.getElementById('demoBtn');
-    const authError = document.getElementById('authError');
-
-    const form = document.getElementById('lessonForm');
-    const questionsContainer = document.getElementById('testQuestionsContainer');
-    const lessonsBySubject = document.getElementById('lessonsBySubject');
-
-    let lessons = [];
-
-    // ------------ helpers ------------
-    function log(...a){ console.log('[VSchool]', ...a) }
-    function saveLessons(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(lessons)); }
-    function loadLessons(){ try { lessons = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') || []; } catch(e){ lessons = []; } }
-
-    function escapeHtml(text){
-      if (!text) return '';
-      return String(text).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
-    }
-
-    // ------------ auth ------------
-    function setAuthOverlay(show){
-      authOverlay.style.display = show ? 'flex' : 'none';
-      authOverlay.setAttribute('aria-hidden', show ? 'false' : 'true');
-    }
-    function showAuthError(){
-      authError.style.display = 'block';
-      const box = document.getElementById('authBox');
-      box.classList.remove('shake');
-      void box.offsetWidth;
-      box.classList.add('shake');
-      setTimeout(()=> authError.style.display = 'none', 2500);
-    }
-    function attemptLogin(){
-      const pass = (authPass.value || '').trim();
-      log('Попытка логина, pass length=', pass.length);
-      if (pass === CORRECT) {
-        localStorage.setItem('vschoolAuth','true');
-        setAuthOverlay(false);
-        authError.style.display = 'none';
-        log('Авторизация успешна');
-      } else {
-        showAuthError();
-        log('Неверный пароль');
-      }
-    }
-
-    // ------------ test question builder ------------
-    function createQuestionElement(existing){
-      const div = document.createElement('div');
-      div.className = 'test-question';
-      // prefill support
-      const qText = existing?.question || '';
-      const answers = existing?.answers || [
-        { text:'', correct:false },
-        { text:'', correct:false }
-      ];
-      div.innerHTML = `
-        <label>Вопрос:
-          <input type="text" class="question-text" placeholder="Текст вопроса" required value="${escapeHtml(qText)}" />
-        </label>
-        <div class="answers">
-          <p class="small">Ответы (отметьте правильные):</p>
-          <div class="answers-list"></div>
-          <div style="margin-top:0.4rem; display:flex; gap:0.5rem;">
-            <button type="button" class="btn add-answer-btn secondary">Добавить ответ</button>
-            <button type="button" class="btn remove-question-btn" title="Удалить вопрос">Удалить вопрос</button>
-          </div>
-        </div>
-      `;
-
-      const answersList = div.querySelector('.answers-list');
-      function addAnswerField(ans){
-        const idx = answersList.children.length;
-        const wrap = document.createElement('label');
-        wrap.style.display = 'block';
-        const checked = ans?.correct ? 'checked' : '';
-        const textVal = escapeHtml(ans?.text || '');
-        wrap.innerHTML = `<input type="checkbox" class="answer-correct" ${checked} /> <input type="text" class="answer-text" placeholder="Ответ" required value="${textVal}" /> <button type="button" class="btn delete-answer-btn" style="background:#f5f5f5;color:#333;padding:0.18rem 0.45rem;border-radius:6px;border:1px solid #ddd;margin-left:6px;">✕</button>`;
-        answersList.appendChild(wrap);
-        wrap.querySelector('.delete-answer-btn').onclick = () => {
-          if (answersList.children.length <= 1) { wrap.querySelector('.answer-text').value = ''; wrap.querySelector('.answer-correct').checked = false; return; }
-          wrap.remove();
-        };
-      }
-
-      // populate existing answers
-      for (const a of answers) addAnswerField(a);
-
-      div.querySelector('.add-answer-btn').onclick = () => addAnswerField({text:'', correct:false});
-      div.querySelector('.remove-question-btn').onclick = () => div.remove();
-
-      return div;
-    }
-
-    // ------------ rendering lessons ------------
-    function renderLessonsBySubject(){
-      lessonsBySubject.innerHTML = '';
-      if (!lessons || lessons.length === 0) {
-        lessonsBySubject.innerHTML = '<p class="muted">Уроки ещё не созданы.</p>';
-        return;
-      }
-      const grouped = {};
-      for (const lesson of lessons) {
-        const subj = lesson.subject || 'other';
-        if (!grouped[subj]) grouped[subj] = [];
-        grouped[subj].push(lesson);
-      }
-      const subjectNames = { informatics:"Информатика", robotics:"Робототехника", biology:"Биология", geography:"География", other:"Прочее" };
-
-      for (const subject in grouped) {
-        const block = document.createElement('div');
-        block.className = 'subject-block';
-        const header = document.createElement('div');
-        header.className = 'subject-header';
-        header.innerHTML = `<span>${subjectNames[subject] || subject}</span><span class="toggle-icon">&#9660;</span>`;
-        const list = document.createElement('div');
-        list.className = 'subject-lessons';
-        grouped[subject].forEach((lesson, i) => {
-          const item = document.createElement('div');
-          item.className = 'lesson-item';
-          const title = escapeHtml(lesson.title || 'Без названия');
-          const subtitle = lesson.description ? `<div class="small" style="margin-top:4px">${escapeHtml(lesson.description)}</div>` : '';
-          const left = document.createElement('div');
-          left.innerHTML = `<div class="title">${title}</div>${subtitle}`;
-          const right = document.createElement('div');
-          const delBtn = document.createElement('button');
-          delBtn.className = 'delete-btn';
-          delBtn.textContent = 'Удалить';
-          delBtn.onclick = () => {
-            if (!confirm(`Удалить урок "${lesson.title}"?`)) return;
-            // remove by id if present (to avoid reference equality issues)
-            lessons = lessons.filter(l => l._id !== lesson._id);
-            saveLessons();
-            renderLessonsBySubject();
-          };
-          right.appendChild(delBtn);
-          item.appendChild(left);
-          item.appendChild(right);
-
-          // make clicking title open lesson preview (small modal) — optional
-          item.onclick = (ev) => {
-            if (ev.target === delBtn) return;
-            showLessonPreview(lesson);
-          };
-
-          list.appendChild(item);
-        });
-        header.onclick = () => {
-          const visible = list.style.display !== 'none';
-          list.style.display = visible ? 'none' : 'block';
-          header.classList.toggle('collapsed', visible);
-        };
-        block.appendChild(header);
-        block.appendChild(list);
-        lessonsBySubject.appendChild(block);
-      }
-    }
-
-    // small preview overlay
-    function showLessonPreview(lesson){
-      const overlay = document.createElement('div');
-      overlay.style = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:10000;padding:16px;';
-      const box = document.createElement('div');
-      box.style = 'background:#fff;max-width:900px;width:100%;max-height:90vh;overflow:auto;border-radius:10px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,0.4);';
-      box.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
-          <h3 style="margin:0">${escapeHtml(lesson.title || 'Без названия')}</h3>
-          <button class="btn" style="padding:6px 10px">Закрыть</button>
-        </div>
-        <div class="small" style="margin-top:8px">${escapeHtml(lesson.description || '')}</div>
-        <div style="margin-top:12px">${lesson.image ? `<img src="${escapeHtml(lesson.image)}" alt="" style="max-width:200px;display:block;border-radius:8px;margin-bottom:8px;">` : ''}</div>
-        <div style="margin-top:8px">${lesson.content || ''}</div>
-        <div style="margin-top:12px">
-          <h4>Тест</h4>
-          <div id="previewTest"></div>
-        </div>
-      `;
-      overlay.appendChild(box);
-      document.body.appendChild(overlay);
-      const closeBtn = box.querySelector('button');
-      closeBtn.onclick = () => overlay.remove();
-      overlay.onclick = (ev) => { if (ev.target === overlay) overlay.remove(); };
-
-      const previewTest = box.querySelector('#previewTest');
-      if (!lesson.test || lesson.test.length === 0) {
-        previewTest.innerHTML = '<div class="muted">Тестов нет</div>';
-      } else {
-        previewTest.innerHTML = '';
-        lesson.test.forEach((q, idx) => {
-          const qDiv = document.createElement('div');
-          qDiv.style = 'padding:8px;border-bottom:1px solid #eee';
-          qDiv.innerHTML = `<div style="font-weight:600">${idx+1}. ${escapeHtml(q.question)}</div>`;
-          for (const a of q.answers) {
-            const mark = a.correct ? ' (верно)' : '';
-            const text = escapeHtml(a.text || '');
-            qDiv.innerHTML += `<div style="margin-left:10px">${text}${mark}</div>`;
-          }
-          previewTest.appendChild(qDiv);
-        });
-      }
-    }
-
-    // ------------ form handling ------------
-    function collectFormData(){
-      const lesson = {
-        _id: 'id_' + Date.now() + '_' + Math.random().toString(36).slice(2,8),
-        title: document.getElementById('title').value.trim(),
-        description: document.getElementById('description').value.trim(),
-        content: document.getElementById('content').value.trim(),
-        image: document.getElementById('image').value.trim(),
-        video: document.getElementById('video').value.trim(),
-        subject: document.getElementById('subject').value || 'other',
-        test: []
-      };
-      const qBlocks = questionsContainer.querySelectorAll('.test-question');
-      for (const q of qBlocks) {
-        const questionText = q.querySelector('.question-text').value.trim();
-        const answers = [];
-        for (const label of q.querySelectorAll('.answers-list label')) {
-          const textEl = label.querySelector('.answer-text');
-          const chk = label.querySelector('.answer-correct');
-          if (!textEl) continue;
-          const textVal = textEl.value.trim();
-          if (textVal === '') continue;
-          answers.push({ text: textVal, correct: !!chk.checked });
-        }
-        if (questionText && answers.length > 0) lesson.test.push({ question: questionText, answers });
-      }
-      return lesson;
-    }
-
-    function resetForm(){
-      form.reset();
-      questionsContainer.innerHTML = '';
-    }
-
-    // ------------ init ------------
-    document.addEventListener('DOMContentLoaded', () => {
-      // load lessons
-      loadLessons();
-      renderLessonsBySubject();
-
-      // auth
-      const isAuthed = localStorage.getItem('vschoolAuth') === 'true';
-      setAuthOverlay(!isAuthed);
-
-      // handlers
-      authPass.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); attemptLogin(); }});
-      loginBtn.addEventListener('click', attemptLogin);
-      demoBtn.addEventListener('click', () => {
-        document.getElementById('authName').value = 'Teacher';
-        document.getElementById('authPass').value = CORRECT;
-      });
-
-      // add first empty question by default (optional)
-      // questionsContainer.appendChild(createQuestionElement());
-
-      document.getElementById('addQuestionBtn').addEventListener('click', () => {
-        questionsContainer.appendChild(createQuestionElement());
-        // focus last question input
-        const last = questionsContainer.querySelector('.test-question:last-child .question-text');
-        if (last) last.focus();
-      });
-
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (localStorage.getItem('vschoolAuth') !== 'true') {
-          alert('Сначала авторизуйтесь!');
-          setAuthOverlay(true);
-          return;
-        }
-        const lesson = collectFormData();
-        if (!lesson.title) { alert('Введите заголовок урока'); return; }
-        lessons.push(lesson);
-        saveLessons();
-        resetForm();
-        renderLessonsBySubject();
-        alert('Урок добавлен!');
-      });
-    });
-
-    // expose for debugging (optional)
-    window.__VSchool = { saveLessons, loadLessons, renderLessonsBySubject };
-
-  })();
-  </script>
-</body>
-</html>    <div id="authBox" role="dialog" aria-modal="true">
-      <h2>Авторизация</h2>
-      <input type="text" id="authName" placeholder="Имя" style="margin-bottom:1rem" />
-      <input type="password" id="authPass" placeholder="Пароль" style="margin-bottom:1rem" />
-      <div style="display:flex; gap:0.5rem; justify-content:center;">
-        <button id="loginBtn">Войти</button>
-        <button id="demoBtn" title="Прим. заполнение">Demo</button>
-      </div>
-      <p id="authError">Неверный пароль</p>
-      <p style="font-size:12px; color:#666; margin-top:0.6rem">Подсказка: пароль — <code>44191033</code></p>
-    </div>
-  </div>
-
-  <h1>Добавить новый урок</h1>
-
-  <form id="lessonForm">
-    <label for="title">Название урока *</label>
-    <input type="text" id="title" name="title" required />
-    <label for="description">Описание</label>
-    <textarea id="description" name="description"></textarea>
-    <label for="content">Содержание (HTML разрешён)</label>
-    <textarea id="content" name="content"></textarea>
-    <label for="image">URL изображения (опционально)</label>
-    <input type="text" id="image" name="image" placeholder="https://example.com/image.jpg" />
-    <label for="video">URL видео (опционально)</label>
-    <input type="text" id="video" name="video" placeholder="https://youtube.com/..." />
-    <label for="subject">Предмет *</label>
-    <select id="subject" name="subject" required>
-      <option value="">Выберите предмет</option>
-      <option value="informatics">Информатика</option>
-      <option value="robotics">Робототехника</option>
-      <option value="biology">Биология</option>
-      <option value="geography">География</option>
-    </select>
-
-    <h2>Тест к уроку (опционально)</h2>
-    <div id="testQuestionsContainer" class="test-block"></div>
-    <button type="button" id="addQuestionBtn">Добавить вопрос</button>
-    <br />
-    <button type="submit">Сохранить урок</button>
-  </form>
-
-  <hr />
-  <h2>Список уроков по предметам</h2>
-  <div id="lessonsBySubject"></div>
-
-  <script>
-  (function(){
-    // --- DEBUG helper ---
-    function log(...a){ console.log('[VSchool]', ...a) }
-
-    // DOM refs
-    const authOverlay = document.getElementById('authOverlay');
-    const authPass = document.getElementById('authPass');
-    const loginBtn = document.getElementById('loginBtn');
-    const demoBtn = document.getElementById('demoBtn');
-    const authError = document.getElementById('authError');
-
-    const form = document.getElementById('lessonForm');
-    const questionsContainer = document.getElementById('testQuestionsContainer');
-    const lessonsBySubject = document.getElementById('lessonsBySubject');
-
-    // data
+    const lessonsContainer = document.getElementById('lessonsContainer');
     let lessons = JSON.parse(localStorage.getItem('vsLessons') || '[]');
-    const CORRECT = '44191033';
+    let currentFilter = 'all';
 
-    // Ensure elements exist
-    if (!authOverlay || !authPass || !loginBtn) {
-      console.error('Элементы авторизации не найдены', {authOverlay, authPass, loginBtn});
-    }
+    function renderLessons() {
+      lessonsContainer.innerHTML = '';
+      const filtered = currentFilter === 'all'
+        ? lessons
+        : lessons.filter(l => l.subject === currentFilter);
 
-    // Attach listeners robustly after DOM ready
-    document.addEventListener('DOMContentLoaded', () => {
-      // Enter in password triggers login
-      authPass.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Enter') {
-          ev.preventDefault();
-          attemptLogin();
-        }
-      });
-
-      loginBtn.addEventListener('click', attemptLogin);
-      demoBtn.addEventListener('click', () => {
-        document.getElementById('authName').value = 'Teacher';
-        document.getElementById('authPass').value = CORRECT;
-      });
-
-      // show/hide overlay based on previous auth
-      const isAuthed = localStorage.getItem('vschoolAuth') === 'true';
-      setAuthOverlay(!isAuthed);
-
-      // form submit protection: if not authed, block submit
-      form.addEventListener('submit', (e) => {
-        const authedNow = localStorage.getItem('vschoolAuth') === 'true';
-        if (!authedNow) {
-          e.preventDefault();
-          alert('Сначала авторизуйтесь!');
-          setAuthOverlay(true);
-          return;
-        }
-      });
-
-      // Load and render lessons
-      renderLessonsBySubject();
-    });
-
-    // try login
-    function attemptLogin(){
-      try {
-        const pass = (authPass.value || '').trim();
-        log('Попытка входа, введён пароль length=', pass.length);
-        if (pass === CORRECT) {
-          localStorage.setItem('vschoolAuth','true');
-          authError.style.display = 'none';
-          setAuthOverlay(false);
-          log('Авторизация успешна');
-        } else {
-          showAuthError();
-          log('Неверный пароль');
-        }
-      } catch (err) {
-        console.error('Ошибка в attemptLogin', err);
-      }
-    }
-
-    function setAuthOverlay(show){
-      authOverlay.style.display = show ? 'flex' : 'none';
-      authOverlay.setAttribute('aria-hidden', show ? 'false' : 'true');
-    }
-
-    function showAuthError(){
-      authError.style.display = 'block';
-      // shake effect
-      const box = document.getElementById('authBox');
-      box.classList.remove('shake');
-      // trigger reflow for animation restart
-      void box.offsetWidth;
-      box.classList.add('shake');
-    }
-
-    // ---------- lessons logic (unchanged, working) ----------
-    function createQuestionElement() {
-      const div = document.createElement('div');
-      div.classList.add('test-question');
-      div.innerHTML = `
-        <label>Вопрос:
-          <input type="text" class="question-text" placeholder="Текст вопроса" required />
-        </label>
-        <div class="answers">
-          <p>Ответы (отметьте правильные):</p>
-          <label><input type="checkbox" class="answer-correct" /><input type="text" class="answer-text" placeholder="Ответ" required /></label>
-          <label><input type="checkbox" class="answer-correct" /><input type="text" class="answer-text" placeholder="Ответ" required /></label>
-        </div>
-        <button type="button" class="remove-question-btn">Удалить вопрос</button>
-      `;
-      div.querySelector(".remove-question-btn").onclick = () => div.remove();
-      return div;
-    }
-
-    document.getElementById("addQuestionBtn").onclick = () => {
-      questionsContainer.appendChild(createQuestionElement());
-    };
-
-    function renderLessonsBySubject() {
-      lessonsBySubject.innerHTML = "";
-      if (!lessons || lessons.length === 0) {
-        lessonsBySubject.innerHTML = "<p>Уроки ещё не созданы.</p>";
+      if (filtered.length === 0) {
+        lessonsContainer.innerHTML = '<p>Уроков пока нет.</p>';
         return;
       }
-      const grouped = {};
-      for (const lesson of lessons) {
-        const subj = lesson.subject || 'other';
-        if (!grouped[subj]) grouped[subj] = [];
-        grouped[subj].push(lesson);
-      }
-      const subjectNames = { informatics:"Информатика", robotics:"Робототехника", biology:"Биология", geography:"География" };
-      for (const subject in grouped) {
-        const block = document.createElement('div');
-        block.className = 'subject-block';
-        const header = document.createElement('div');
-        header.className = 'subject-header';
-        header.innerHTML = `<span>${subjectNames[subject] || subject}</span><span class="toggle-icon">&#9660;</span>`;
-        const list = document.createElement('div');
-        list.className = 'subject-lessons';
-        grouped[subject].forEach(lesson => {
-          const item = document.createElement('div');
-          item.className = 'lesson-item';
-          item.innerHTML = `<span class="title">${escapeHtml(lesson.title || 'Без названия')}</span><button class="delete-btn">Удалить</button>`;
-          item.querySelector(".delete-btn").onclick = () => {
-            if (confirm(`Удалить урок "${lesson.title}"?`)) {
-              lessons = lessons.filter(l => l !== lesson);
-              localStorage.setItem('vsLessons', JSON.stringify(lessons));
-              renderLessonsBySubject();
-            }
-          };
-          list.appendChild(item);
-        });
-        header.onclick = () => {
-          const visible = list.style.display !== 'none';
-          list.style.display = visible ? 'none' : 'block';
-          header.classList.toggle('collapsed', visible);
-        };
-        block.appendChild(header);
-        block.appendChild(list);
-        lessonsBySubject.appendChild(block);
-      }
-    }
 
-    form.onsubmit = e => {
-      e.preventDefault();
-      const lesson = {
-        title: form.title.value.trim(),
-        description: form.description.value.trim(),
-        content: form.content.value.trim(),
-        image: form.image.value.trim(),
-        video: form.video.value.trim(),
-        subject: form.subject.value,
-        test: []
-      };
-      const qBlocks = questionsContainer.querySelectorAll(".test-question");
-      for (const q of qBlocks) {
-        const questionText = q.querySelector(".question-text").value.trim();
-        const answers = [...q.querySelectorAll(".answers label")].map(label => ({
-          text: label.querySelector(".answer-text").value.trim(),
-          correct: label.querySelector(".answer-correct").checked
-        }));
-        if (questionText) lesson.test.push({ question: questionText, answers });
-      }
-      lessons.push(lesson);
-      localStorage.setItem('vsLessons', JSON.stringify(lessons));
-      alert("Урок добавлен!");
-      form.reset();
-      questionsContainer.innerHTML = "";
-      renderLessonsBySubject();
-    };
-
-    // small escape for HTML in outputs
-    function escapeHtml(text){
-      if (!text) return '';
-      return text.replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
-    }
-
-  })();
-  </script>
-</body>
-</html>ок добавлен!");
-      form.reset();
-      questionsContainer.innerHTML = "";
-      renderLessonsBySubject();
-    };
-
-    const correctPassword = "44191033";
-    function checkAuth() {
-      const pass = document.getElementById("authPass").value;
-      const error = document.getElementById("authError");
-      if (pass === correctPassword) {
-        localStorage.setItem("vschoolAuth", "true");
-        document.getElementById("authOverlay").style.display = "none";
-        error.style.display = "none";
-      } else {
-        error.style.display = "block";
-      }
-    }
-
-    window.onload = () => {
-      const isAuthed = localStorage.getItem("vschoolAuth") === "true";
-      document.getElementById("authOverlay").style.display = isAuthed ? "none" : "flex";
-      document.getElementById("loginBtn").addEventListener("click", checkAuth);
-    };
-  </script>
-</body>
-</html>      background-color: #2078f4;
-      color: white;
-      border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 1rem;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-      user-select: none;
-    }
-    button:hover {
-      background-color: #145bb5;
-    }
-    .test-block {
-      margin-top: 2rem;
-      padding: 1rem;
-      border: 1px solid #2078f4;
-      border-radius: 10px;
-      background: #e6f0ff;
-    }
-    .test-question {
-      margin-bottom: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #ccc;
-    }
-    .test-question:last-child {
-      border-bottom: none;
-    }
-    .answers label {
-      display: block;
-      margin-left: 1rem;
-      margin-bottom: 0.4rem;
-      cursor: pointer;
-    }
-    .answers input[type="text"] {
-      width: auto;
-      padding: 0.3rem 0.5rem;
-      margin-left: 0.3rem;
-      font-size: 0.95rem;
-    }
-    .remove-question-btn {
-      background: #b00;
-      margin-top: 0.5rem;
-      padding: 0.2rem 0.7rem;
-      font-size: 0.85rem;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.2s ease;
-    }
-    .remove-question-btn:hover {
-      background: #900;
-    }
-    hr {
-      margin-top: 2rem;
-      margin-bottom: 2rem;
-      border: none;
-      border-top: 1px solid #ccc;
-    }
-    .subject-block {
-      margin-bottom: 2rem;
-      border: 1px solid #2078f4;
-      border-radius: 10px;
-      background: #e9f1ff;
-    }
-    .subject-header {
-      background: #2078f4;
-      color: white;
-      padding: 0.5rem 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      user-select: none;
-      border-radius: 10px 10px 0 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .subject-header .toggle-icon {
-      font-weight: normal;
-      font-size: 1.2rem;
-      user-select: none;
-      transition: transform 0.3s ease;
-    }
-    .subject-header.collapsed .toggle-icon {
-      transform: rotate(-90deg);
-    }
-    .subject-lessons {
-      padding: 0.8rem 1rem;
-      display: block;
-    }
-    .lesson-item {
-      padding: 0.6rem;
-      background: #eef4ff;
-      margin-bottom: 0.4rem;
-      border-radius: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .lesson-item span.title {
-      font-weight: 600;
-      color: #2078f4;
-    }
-    .lesson-item button.delete-btn {
-      background: #d33;
-      border: none;
-      color: white;
-      padding: 0.3rem 0.7rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      user-select: none;
-      transition: background-color 0.2s ease;
-    }
-    .lesson-item button.delete-btn:hover {
-      background: #a00;
-    }
-  </style>
-</head>
-<body>
-  <div id="authOverlay" style="
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-  ">
-    <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.3); max-width: 300px; width: 90%; text-align: center;">
-      <h2>Авторизация</h2>
-      <input type="text" id="authName" placeholder="Имя" style="margin-bottom: 1rem; width: 100%; padding: 0.5rem;" />
-      <input type="password" id="authPass" placeholder="Пароль" style="margin-bottom: 1rem; width: 100%; padding: 0.5rem;" />
-      <button onclick="checkAuth()" style="padding: 0.5rem 1rem;">Войти</button>
-      <p id="authError" style="color: red; margin-top: 0.5rem; display: none;">Неверный пароль</p>
-    </div>
-  </div>
-
-  <h1>Добавить новый урок</h1>
-  <form id="lessonForm">
-    <label for="title">Название урока *</label>
-    <input type="text" id="title" required />
-    <label for="description">Описание</label>
-    <textarea id="description"></textarea>
-    <label for="content">Содержание (HTML разрешён)</label>
-    <textarea id="content"></textarea>
-    <label for="image">URL изображения (опционально)</label>
-    <input type="text" id="image" placeholder="https://example.com/image.jpg" />
-    <label for="video">URL видео (опционально)</label>
-    <input type="text" id="video" placeholder="https://youtube.com/..." />
-    <label for="subject">Предмет *</label>
-    <select id="subject" required>
-      <option value="">Выберите предмет</option>
-      <option value="informatics">Информатика</option>
-      <option value="robotics">Робототехника</option>
-      <option value="biology">Биология</option>
-      <option value="geography">География</option>
-    </select>
-    <h2>Тест к уроку (опционально)</h2>
-    <div id="testQuestionsContainer" class="test-block"></div>
-    <button type="button" id="addQuestionBtn">Добавить вопрос</button>
-    <br />
-    <button type="submit">Сохранить урок</button>
-  </form>
-  <hr />
-  <h2>Список уроков по предметам</h2>
-  <div id="lessonsBySubject"></div>
-
-  <script>
-    const form = document.getElementById("lessonForm");
-    const questionsContainer = document.getElementById("testQuestionsContainer");
-    const lessonsBySubject = document.getElementById("lessonsBySubject");
-    let lessons = JSON.parse(localStorage.getItem("vsLessons") || "[]");
-
-    function createQuestionElement() {
-      const div = document.createElement("div");
-      div.classList.add("test-question");
-      div.innerHTML = `
-        <label>Вопрос:
-          <input type="text" class="question-text" placeholder="Текст вопроса" required />
-        </label>
-        <div class="answers">
-          <p>Ответы (отметьте правильные):</p>
-          <label><input type="checkbox" class="answer-correct" /><input type="text" class="answer-text" placeholder="Ответ" required /></label>
-          <label><input type="checkbox" class="answer-correct" /><input type="text" class="answer-text" placeholder="Ответ" required /></label>
-        </div>
-        <button type="button" class="remove-question-btn">Удалить вопрос</button>
-      `;
-      div.querySelector(".remove-question-btn").onclick = () => div.remove();
-      return div;
-    }
-
-    document.getElementById("addQuestionBtn").onclick = () => {
-      questionsContainer.appendChild(createQuestionElement());
-    };
-
-    function renderLessonsBySubject() {
-      lessonsBySubject.innerHTML = "";
-      if (lessons.length === 0) {
-        lessonsBySubject.innerHTML = "<p>Уроки ещё не созданы.</p>";
-        return;
-      }
-      const grouped = {};
-      for (const lesson of lessons) {
-        if (!grouped[lesson.subject]) grouped[lesson.subject] = [];
-        grouped[lesson.subject].push(lesson);
-      }
-      const subjectNames = {
-        informatics: "Информатика",
-        robotics: "Робототехника",
-        biology: "Биология",
-        geography: "География"
-      };
-      for (const subject in grouped) {
-        const block = document.createElement("div");
-        block.className = "subject-block";
-        const header = document.createElement("div");
-        header.className = "subject-header";
-        header.innerHTML = `<span>${subjectNames[subject] || subject}</span><span class="toggle-icon">&#9660;</span>`;
-        const list = document.createElement("div");
-        list.className = "subject-lessons";
-        grouped[subject].forEach(lesson => {
-          const item = document.createElement("div");
-          item.className = "lesson-item";
-          item.innerHTML = `<span class="title">${lesson.title}</span><button class="delete-btn">Удалить</button>`;
-          item.querySelector(".delete-btn").onclick = () => {
-            if (confirm(`Удалить урок "${lesson.title}"?`)) {
-              lessons = lessons.filter(l => l !== lesson);
-              localStorage.setItem("vsLessons", JSON.stringify(lessons));
-              renderLessonsBySubject();
-            }
-          };
-          list.appendChild(item);
-        });
-        header.onclick = () => {
-          const visible = list.style.display !== "none";
-          list.style.display = visible ? "none" : "block";
-          header.classList.toggle("collapsed", visible);
-        };
-        block.appendChild(header);
-        block.appendChild(list);
-        lessonsBySubject.appendChild(block);
-      }
-    }
-    renderLessonsBySubject();
-
-    form.onsubmit = e => {
-      e.preventDefault();
-      const lesson = {
-        title: form.title.value.trim(),
-        description: form.description.value.trim(),
-        content: form.content.value.trim(),
-        image: form.image.value.trim(),
-        video: form.video.value.trim(),
-        subject: form.subject.value,
-        test: []
-      };
-      const qBlocks = questionsContainer.querySelectorAll(".test-question");
-      qBlocks.forEach(q => {
-        const questionText = q.querySelector(".question-text").value;
-        const answers = [...q.querySelectorAll(".answers label")].map(label => ({
-          text: label.querySelector(".answer-text").value,
-          correct: label.querySelector(".answer-correct").checked
-        }));
-        lesson.test.push({ question: questionText, answers });
-      });
-      lessons.push(lesson);
-      localStorage.setItem("vsLessons", JSON.stringify(lessons));
-      alert("Урок добавлен!");
-      form.reset();
-      questionsContainer.innerHTML = "";
-      renderLessonsBySubject();
-    };
-
-    const correctPassword = "44191033";
-    function checkAuth() {
-      const pass = document.getElementById("authPass").value;
-      if (pass === correctPassword) {
-        localStorage.setItem("vschoolAuth", "true");
-        document.getElementById("authOverlay").style.display = "none";
-      } else {
-        document.getElementById("authError").style.display = "block";
-      }
-    }
-    window.onload = () => {
-      const isAuthed = localStorage.getItem("vschoolAuth") === "true";
-      document.getElementById("authOverlay").style.display = isAuthed ? "none" : "flex";
-    };
-  </script>
-</body>
-</html>      background-color: #2078f4;
-      color: white;
-      border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 1rem;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-      user-select: none;
-    }
-    button:hover {
-      background-color: #145bb5;
-    }
-    .test-block {
-      margin-top: 2rem;
-      padding: 1rem;
-      border: 1px solid #2078f4;
-      border-radius: 10px;
-      background: #e6f0ff;
-    }
-    .test-question {
-      margin-bottom: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #ccc;
-    }
-    .test-question:last-child {
-      border-bottom: none;
-    }
-    .answers label {
-      display: block;
-      margin-left: 1rem;
-      margin-bottom: 0.4rem;
-      cursor: pointer;
-    }
-    .answers input[type="text"] {
-      width: auto;
-      padding: 0.3rem 0.5rem;
-      margin-left: 0.3rem;
-      font-size: 0.95rem;
-    }
-    .remove-question-btn {
-      background: #b00;
-      margin-top: 0.5rem;
-      padding: 0.2rem 0.7rem;
-      font-size: 0.85rem;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.2s ease;
-    }
-    .remove-question-btn:hover {
-      background: #900;
-    }
-    hr {
-      margin-top: 2rem;
-      margin-bottom: 2rem;
-      border: none;
-      border-top: 1px solid #ccc;
-    }
-    /* Стили для списка уроков с группировкой по предметам */
-    .subject-block {
-      margin-bottom: 2rem;
-      border: 1px solid #2078f4;
-      border-radius: 10px;
-      background: #e9f1ff;
-    }
-    .subject-header {
-      background: #2078f4;
-      color: white;
-      padding: 0.5rem 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      user-select: none;
-      border-radius: 10px 10px 0 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .subject-header .toggle-icon {
-      font-weight: normal;
-      font-size: 1.2rem;
-      user-select: none;
-      transition: transform 0.3s ease;
-    }
-    .subject-header.collapsed .toggle-icon {
-      transform: rotate(-90deg);
-    }
-    .subject-lessons {
-      padding: 0.8rem 1rem;
-      display: block;
-    }
-    .lesson-item {
-      padding: 0.6rem;
-      background: #eef4ff;
-      margin-bottom: 0.4rem;
-      border-radius: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .lesson-item span.title {
-      font-weight: 600;
-      color: #2078f4;
-    }
-    .lesson-item button.delete-btn {
-      background: #d33;
-      border: none;
-      color: white;
-      padding: 0.3rem 0.7rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      user-select: none;
-      transition: background-color 0.2s ease;
-    }
-    .lesson-item button.delete-btn:hover {
-      background: #a00;
-    }
-  </style>
-</head>
-<body>
-
-    <div id="authOverlay" style="
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-">
-  <div style="
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    max-width: 300px;
-    width: 90%;
-    text-align: center;
-  ">
-    <h2>Авторизация</h2>
-    <input type="text" id="authName" placeholder="Имя" style="margin-bottom: 1rem; width: 100%; padding: 0.5rem;" />
-    <input type="password" id="authPass" placeholder="Пароль" style="margin-bottom: 1rem; width: 100%; padding: 0.5rem;" />
-    <button onclick="checkAuth()" style="padding: 0.5rem 1rem;">Войти</button>
-    <p id="authError" style="color: red; margin-top: 0.5rem; display: none;">Неверный пароль</p>
-  </div>
-</div>
-
-
-<h1>Добавить новый урок</h1>
-
-<form id="lessonForm">
-  <label for="title">Название урока *</label>
-  <input type="text" id="title" name="title" required />
-
-  <label for="description">Описание</label>
-  <textarea id="description" name="description"></textarea>
-
-  <label for="content">Содержание (HTML разрешён)</label>
-  <textarea id="content" name="content"></textarea>
-
-  <label for="image">URL изображения (опционально)</label>
-  <input type="text" id="image" name="image" placeholder="https://example.com/image.jpg" />
-
-  <label for="video">URL видео (YouTube, Vimeo или видеофайл) (опционально)</label>
-  <input type="text" id="video" name="video" placeholder="https://youtube.com/..." />
-
-  <label for="subject">Предмет *</label>
-  <select id="subject" name="subject" required>
-    <option value="">Выберите предмет</option>
-    <option value="informatics">Информатика</option>
-    <option value="robotics">Робототехника</option>
-    <option value="biology">Биология</option>
-    <option value="geography">География</option>
-  </select>
-
-  <h2>Тест к уроку (опционально)</h2>
-
-  <div id="testQuestionsContainer" class="test-block">
-    <!-- Вопросы будут добавляться сюда -->
-  </div>
-
-  <button type="button" id="addQuestionBtn">Добавить вопрос</button>
-
-  <br/>
-  <button type="submit">Сохранить урок</button>
-</form>
-
-<hr />
-
-<h2>Список уроков по предметам</h2>
-<div id="lessonsBySubject"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
-<script>
-  // Инициализация Supabase
-  const supabaseUrl = 'https://oyzumzmidcegpbewhzcm.supabase.co'; // твой URL
-  const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95enVtem1pZGNlZ3BiZXdoemNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0OTk5OTYsImV4cCI6MjA3NjA3NTk5Nn0.fndukbDPx_QjU_DqW54oXarqo2d1xru8oWw5yuplLMo'; // anon key из панели Supabase
-  const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
-
-  const lessonForm = document.getElementById('lessonForm');
-  const testQuestionsContainer = document.getElementById('testQuestionsContainer');
-  const addQuestionBtn = document.getElementById('addQuestionBtn');
-  const lessonsBySubject = document.getElementById('lessonsBySubject');
-
-  // Локальный кэш уроков
-  let lessons = [];
-
-  // Загрузка уроков из Supabase
-  async function loadLessonsFromSupabase() {
-    const { data, error } = await supabase
-      .from('lessons')
-      .select('*')
-      .order('id', { ascending: true });
-
-    if (error) {
-      alert('Ошибка загрузки уроков: ' + error.message);
-      return;
-    }
-    lessons = data || [];
-  }
-
-  // Добавление урока в Supabase
-  async function addLessonToSupabase(lesson) {
-    const { error } = await supabase
-      .from('lessons')
-      .insert([lesson]);
-
-    if (error) {
-      alert('Ошибка добавления урока: ' + error.message);
-      return false;
-    }
-    return true;
-  }
-
-  // Создание элемента вопроса
-  function createQuestionElement(question = {question: '', answers: [{text:'', correct:false},{text:'', correct:false}]}) {
-    const div = document.createElement('div');
-    div.classList.add('test-question');
-
-    div.innerHTML = `
-      <label>Вопрос:
-        <input type="text" class="question-text" placeholder="Текст вопроса" value="${escapeHtml(question.question)}" required />
-      </label>
-      <div class="answers">
-        <p>Ответы (отметьте правильные):</p>
-        ${question.answers.map((a, i) => `
-          <label>
-            <input type="checkbox" class="answer-correct" ${a.correct ? 'checked' : ''} />
-            <input type="text" class="answer-text" placeholder="Текст ответа" value="${escapeHtml(a.text)}" required />
-          </label>
-        `).join('')}
-      </div>
-      <button type="button" class="remove-question-btn">Удалить вопрос</button>
-    `;
-
-    div.querySelector('.remove-question-btn').onclick = () => {
-      div.remove();
-    };
-
-    return div;
-  }
-
-  addQuestionBtn.onclick = () => {
-    const questionElement = createQuestionElement();
-    testQuestionsContainer.appendChild(questionElement);
-  };
-
-  // Экранируем HTML
-  function escapeHtml(text) {
-    return text.replace(/[&<>"']/g, function(m) {
-      return {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
-      }[m];
-    });
-  }
-
-  // Отрисовка уроков по предметам из массива lessons
-  function renderLessonsBySubject() {
-    if (lessons.length === 0) {
-      lessonsBySubject.innerHTML = '<p>Уроки ещё не созданы.</p>';
-      return;
-    }
-
-    const grouped = {};
-    for (const lesson of lessons) {
-      const subj = lesson.subject || 'other';
-      if (!grouped[subj]) grouped[subj] = [];
-      grouped[subj].push(lesson);
-    }
-
-    const subjectNames = {
-      informatics: 'Информатика',
-      robotics: 'Робототехника',
-      biology: 'Биология',
-      geography: 'География',
-    };
-
-    lessonsBySubject.innerHTML = '';
-
-    for (const subject in grouped) {
-      const block = document.createElement('div');
-      block.className = 'subject-block';
-
-      const header = document.createElement('div');
-      header.className = 'subject-header';
-      header.innerHTML = `
-        <span>${subjectNames[subject] || subject}</span>
-        <span class="toggle-icon">&#9660;</span>
-      `;
-      block.appendChild(header);
-
-      const lessonsContainer = document.createElement('div');
-      lessonsContainer.className = 'subject-lessons';
-
-      grouped[subject].forEach((lesson, idx) => {
-        const lessonDiv = document.createElement('div');
-        lessonDiv.className = 'lesson-item';
-
-        lessonDiv.innerHTML = `
-          <span class="title">${lesson.title || 'Без названия'}</span>
-          <button class="delete-btn">Удалить</button>
+      filtered.forEach(lesson => {
+        const div = document.createElement('a');
+        div.className = 'lesson-box';
+        div.href = '#';
+        div.innerHTML = `
+          <img src="${lesson.image || 'https://via.placeholder.com/400x200?text=VSchool'}" alt="">
+          <div class="lesson-info">
+            <h4>${lesson.title}</h4>
+            <p>${lesson.description || 'Без описания'}</p>
+          </div>
         `;
-
-        lessonDiv.querySelector('.delete-btn').onclick = async () => {
-          if (confirm(`Удалить урок "${lesson.title}"?`)) {
-            // Удаляем из базы по id (предполагается, что есть поле id)
-            const { error } = await supabase
-              .from('lessons')
-              .delete()
-              .eq('id', lesson.id);
-
-            if (error) {
-              alert('Ошибка удаления: ' + error.message);
-              return;
-            }
-
-            // Обновляем локальный кэш и UI
-            lessons = lessons.filter(l => l.id !== lesson.id);
-            renderLessonsBySubject();
-          }
-        };
-
-        lessonsContainer.appendChild(lessonDiv);
+        lessonsContainer.appendChild(div);
       });
-
-      block.appendChild(lessonsContainer);
-      lessonsBySubject.appendChild(block);
-
-      header.onclick = () => {
-        const isCollapsed = lessonsContainer.style.display === 'none';
-        lessonsContainer.style.display = isCollapsed ? 'block' : 'none';
-        header.classList.toggle('collapsed', !isCollapsed);
-      };
-    }
-  }
-
-  // Обработка отправки формы
-  lessonForm.onsubmit = async (e) => {
-    e.preventDefault();
-
-    const title = lessonForm.title.value.trim();
-    if (!title) {
-      alert('Название урока обязательно');
-      return;
     }
 
-    const description = lessonForm.description.value.trim();
-    const content = lessonForm.content.value.trim();
-    const image = lessonForm.image.value.trim();
-    const video = lessonForm.video.value.trim();
-    const subject = lessonForm.subject.value;
-
-    if (!subject) {
-      alert('Пожалуйста, выберите предмет');
-      return;
+    function filterLessons(subject) {
+      currentFilter = subject;
+      renderLessons();
     }
 
-    const questionsDivs = [...testQuestionsContainer.querySelectorAll('.test-question')];
-    const test = {questions: []};
-    for (const qDiv of questionsDivs) {
-      const questionText = qDiv.querySelector('.question-text').value.trim();
-      if (!questionText) {
-        alert('Текст вопроса не может быть пустым');
-        return;
-      }
-
-      const answerLabels = [...qDiv.querySelectorAll('.answers label')];
-      const answers = [];
-
-      for (const label of answerLabels) {
-        const answerTextInput = label.querySelector('.answer-text');
-        const answerCorrectCheckbox = label.querySelector('.answer-correct');
-
-        const answerText = answerTextInput.value.trim();
-        if (!answerText) {
-          alert('Текст ответа не может быть пустым');
-          return;
-        }
-        answers.push({
-          text: answerText,
-          correct: answerCorrectCheckbox.checked
-        });
-      }
-
-      if (!answers.some(a => a.correct)) {
-        alert('В вопросе "' + questionText + '" должен быть хотя бы один правильный ответ.');
-        return;
-      }
-
-      test.questions.push({question: questionText, answers});
-    }
-
-    const newLesson = {
-      title,
-      description,
-      content,
-      image,
-      video,
-      subject,
-      test: test.questions.length ? test : null
-    };
-
-    const success = await addLessonToSupabase(newLesson);
-    if (!success) return;
-
-    alert('Урок успешно добавлен!');
-
-    lessonForm.reset();
-    testQuestionsContainer.innerHTML = '';
-
-    await loadLessonsFromSupabase();
-    renderLessonsBySubject();
-  };
-
-  // Проверка авторизации (без изменений)
-  // Проверка авторизации
-  const correctPassword = '44191033';
-
-  function checkAuth() {
-  const inputPass = document.getElementById('authPass').value.trim();
-  const correctPassword = '44191033';
-  const authError = document.getElementById('authError');
-
-  if (inputPass === correctPassword) {
-    localStorage.setItem('vschoolAuth', 'true');
-    document.getElementById('authOverlay').style.display = 'none';
-    authError.style.display = 'none';
-  } else {
-    authError.style.display = 'block';
-  }
-}
-
-
-  // При загрузке страницы
-  window.addEventListener('DOMContentLoaded', () => {
-    const isAuthed = localStorage.getItem('vschoolAuth') === 'true';
-    if (!isAuthed) {
-      document.getElementById('authOverlay').style.display = 'flex';
-    } else {
-      document.getElementById('authOverlay').style.display = 'none';
-    }
-  });
-
-</script>
-
-
+    window.addEventListener('DOMContentLoaded', renderLessons);
+  </script>
 </body>
 </html>
-
-
-
-
-
