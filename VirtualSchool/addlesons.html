@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>VSchool – Уроки (LocalStorage)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      padding: 2rem;
+      color: #333;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #2078f4;
+    }
+    form {
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="url"], textarea, select {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 1.5rem;
+      background-color: #2078f4;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: inline-block;
+    }
+    button:hover {
+      background-color: #145bb5;
+    }
+    .question-block {
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-top: 1rem;
+    }
+    .answers label {
+      display: block;
+      margin-top: 0.5rem;
+    }
+    .lessons-section {
+      max-width: 700px;
+      margin: 0 auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .lesson-item {
+      padding: 0.6rem;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .lesson-title {
+      font-weight: bold;
+    }
+    .del-btn {
+      background-color: #dd4444;
+      color: white;
+      border: none;
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .del-btn:hover {
+      background-color: #bb2222;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Управление уроками (LocalStorage)</h1>
+
+<form id="lessonForm">
+  <label>Название урока:
+    <input type="text" name="title" required />
+  </label>
+
+  <label>Описание:
+    <textarea name="description" rows="3" required></textarea>
+  </label>
+
+  <label>Содержание урока:
+    <textarea name="content" rows="5" required></textarea>
+  </label>
+
+  <label>Ссылка на изображение:
+    <input type="url" name="image" />
+  </label>
+
+  <label>Ссылка на видео:
+    <input type="url" name="video" />
+  </label>
+
+  <label>Предмет:
+    <select name="subject" required>
+      <option value="informatics">Информатика</option>
+      <option value="robotics">Робототехника</option>
+      <option value="biology">Биология</option>
+      <option value="geography">География</option>
+    </select>
+  </label>
+
+  <hr />
+  <h3>Тест (вопросы и ответы):</h3>
+  <div id="quizContainer"></div>
+  <button type="button" id="addQuestionBtn">+ Добавить вопрос</button>
+
+  <button type="submit">Сохранить урок</button>
+</form>
+
+<div class="lessons-section">
+  <h2>Сохранённые уроки</h2>
+  <div id="lessonsList"></div>
+</div>
+
+<script>
+  const quizContainer = document.getElementById('quizContainer');
+  const lessonsList = document.getElementById('lessonsList');
+  const addQuestionBtn = document.getElementById('addQuestionBtn');
+
+  // Добавление вопроса
+  addQuestionBtn.addEventListener('click', () => {
+    const qIndex = document.querySelectorAll('.question-block').length;
+    const div = document.createElement('div');
+    div.className = 'question-block';
+    div.innerHTML = `
+      <label>Вопрос:
+        <input type="text" name="question-${qIndex}" required />
+      </label>
+      <div class="answers">
+        <label>Ответ 1:
+          <input type="text" name="q${qIndex}-answer-0" required />
+          <input type="checkbox" name="q${qIndex}-correct-0" /> Верный
+        </label>
+        <label>Ответ 2:
+          <input type="text" name="q${qIndex}-answer-1" />
+          <input type="checkbox" name="q${qIndex}-correct-1" /> Верный
+        </label>
+        <label>Ответ 3:
+          <input type="text" name="q${qIndex}-answer-2" />
+          <input type="checkbox" name="q${qIndex}-correct-2" /> Верный
+        </label>
+        <label>Ответ 4:
+          <input type="text" name="q${qIndex}-answer-3" />
+          <input type="checkbox" name="q${qIndex}-correct-3" /> Верный
+        </label>
+      </div>
+    `;
+    quizContainer.appendChild(div);
+  });
+
+  // Сохранение урока в LocalStorage
+  document.getElementById('lessonForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const lesson = {
+      id: Date.now(), // уникальный ID
+      title: formData.get('title'),
+      description: formData.get('description'),
+      content: formData.get('content'),
+      image: formData.get('image'),
+      video: formData.get('video'),
+      subject: formData.get('subject'),
+      test: { questions: [] }
+    };
+
+    // Собираем вопросы и ответы
+    const questions = document.querySelectorAll('.question-block');
+    questions.forEach((block, qIndex) => {
+      const questionText = formData.get(`question-${qIndex}`);
+      const answers = [];
+      for (let i = 0; i < 4; i++) {
+        const answerText = formData.get(`q${qIndex}-answer-${i}`);
+        const correct = formData.get(`q${qIndex}-correct-${i}`) === 'on';
+        if (answerText && answerText.trim() !== '') {
+          answers.push({ text: answerText.trim(), correct });
+        }
+      }
+      if (questionText && questionText.trim() !== '' && answers.length > 0) {
+        lesson.test.questions.push({ question: questionText.trim(), answers });
+      }
+    });
+
+    // Сохраняем в LocalStorage
+    const allLessons = JSON.parse(localStorage.getItem('lessons') || '[]');
+    allLessons.push(lesson);
+    localStorage.setItem('lessons', JSON.stringify(allLessons));
+
+    alert('Урок сохранён!');
+    form.reset();
+    quizContainer.innerHTML = '';
+    loadLessons();
+  });
+
+  // Загрузка уроков из LocalStorage
+  function loadLessons() {
+    const lessons = JSON.parse(localStorage.getItem('lessons') || '[]');
+    lessonsList.innerHTML = '';
+    if (lessons.length === 0) {
+      lessonsList.innerHTML = '<p>Уроки не найдены.</p>';
+      return;
+    }
+
+    lessons.forEach(lesson => {
+      const div = document.createElement('div');
+      div.className = 'lesson-item';
+      div.innerHTML = `
+        <span class="lesson-title">${lesson.title} (${lesson.subject})</span>
+        <button class="del-btn" data-id="${lesson.id}">Удалить</button>
+      `;
+      lessonsList.appendChild(div);
+    });
+
+    // Удаление
+    document.querySelectorAll('.del-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = parseInt(btn.dataset.id);
+        const filtered = JSON.parse(localStorage.getItem('lessons') || '[]').filter(l => l.id !== id);
+        localStorage.setItem('lessons', JSON.stringify(filtered));
+        loadLessons();
+      });
+    });
+  }
+
+  // Загрузка при старте
+  window.addEventListener('DOMContentLoaded', loadLessons);
+</script>
+
+</body>
+</html>

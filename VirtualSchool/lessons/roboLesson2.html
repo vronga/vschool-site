@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>VSchool – Робототехника: Урок 2</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0; background: #f5f7fa; color: #222;
+      min-height: 100vh; display: flex; flex-direction: column;
+    }
+    header {
+      background-color: #2078f4;
+      color: white;
+      padding: 1rem 2rem;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    nav {
+      background-color: #145bb5;
+      padding: 0.5rem 2rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-right: 1.5rem;
+      font-weight: 600;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      flex: 1;
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2, h3 {
+      color: #2078f4;
+      margin-top: 1.5rem;
+    }
+    p, li {
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    ul {
+      padding-left: 1.2rem;
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: Consolas, monospace;
+      font-size: 0.95rem;
+    }
+    footer {
+      background-color: #2078f4;
+      color: white;
+      text-align: center;
+      padding: 1rem 2rem;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    /* Тест */
+    .quiz {
+      margin-top: 2rem;
+    }
+    .quiz-question {
+      margin-bottom: 1.2rem;
+    }
+    .quiz-question h4 {
+      margin-bottom: 0.5rem;
+    }
+    .quiz-question label {
+      display: block;
+      margin-left: 1rem;
+      margin-bottom: 0.3rem;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 1.5rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #2078f4;
+    }
+    button {
+      background-color: #2078f4;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #145bb5;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  VSchool — Робототехника: Урок 2
+</header>
+
+<nav>
+  <a href="../lessons.html">Назад к урокам</a>
+  <a href="../index.html">Главная</a>
+</nav>
+
+<main>
+  <h1>Урок 2: Основные компоненты робота</h1>
+
+  <p>Сегодня мы узнаем, из чего состоит робот и как эти части взаимодействуют между собой. Каждый робот — это сложная система, где каждая деталь выполняет важную функцию.</p>
+
+  <h2>Главные компоненты робота</h2>
+  <ul>
+    <li><strong>Контроллер</strong> — это «мозг» робота. Он получает информацию от датчиков, принимает решения и отправляет команды исполнительным механизмам. Примеры: Arduino, Raspberry Pi, микроконтроллеры.</li>
+    <li><strong>Датчики</strong> — «органы чувств» робота. Они измеряют расстояние, свет, звук, температуру и многое другое. Без них робот не сможет реагировать на окружающую среду.</li>
+    <li><strong>Исполнительные механизмы</strong> — «мышцы» робота. Это двигатели, колёса, сервоприводы и захваты, которые выполняют физические действия.</li>
+    <li><strong>Источник питания</strong> — «сердце» робота. Он обеспечивает энергией все остальные компоненты (батареи, аккумуляторы или питание от сети).</li>
+    <li><strong>Корпус</strong> — «тело» робота. Он защищает внутренние компоненты и задаёт форму роботу.</li>
+  </ul>
+
+  <h2>Как всё работает вместе?</h2>
+  <p>Робот получает информацию от датчиков, контроллер анализирует её и отдаёт команды исполнительным механизмам. Всё это питается от источника энергии и заключено в корпус.</p>
+
+  <h3>Пример: Робот, который избегает препятствий</h3>
+  <pre>
+1. Датчик измеряет расстояние до объекта.
+2. Контроллер получает данные и определяет, близко ли препятствие.
+3. Если слишком близко — посылает команду моторам повернуть.
+4. Робот продолжает движение вперёд.
+  </pre>
+
+  <p>Такой робот может ездить по комнате, не сталкиваясь с предметами!</p>
+
+  <h2>Интересный факт</h2>
+  <p>Даже самые простые игрушечные роботы состоят из этих пяти частей. Например, у робота-пылесоса есть датчики пыли и столкновения, моторы для движения, аккумулятор, контроллер и корпус.</p>
+
+  <h2>Задание</h2>
+  <p>Нарисуй схему робота и подпиши, где находятся контроллер, датчики, двигатели, источник питания и корпус.</p>
+
+  <h2>Проверим знания!</h2>
+
+  <div class="quiz" id="quiz">
+    <div class="quiz-question">
+      <h4>1. Какую функцию выполняет контроллер?</h4>
+      <label><input type="radio" name="q1" value="1"> Управляет роботом и принимает решения</label>
+      <label><input type="radio" name="q1" value="0"> Заряжает батарею</label>
+      <label><input type="radio" name="q1" value="0"> Украшает корпус</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>2. Что делает датчик?</h4>
+      <label><input type="radio" name="q2" value="1"> Считывает информацию из окружающей среды</label>
+      <label><input type="radio" name="q2" value="0"> Выполняет движения</label>
+      <label><input type="radio" name="q2" value="0"> Питает контроллер</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>3. Что является источником энергии для робота?</h4>
+      <label><input type="radio" name="q3" value="1"> Аккумулятор</label>
+      <label><input type="radio" name="q3" value="0"> Датчик температуры</label>
+      <label><input type="radio" name="q3" value="0"> Корпус</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>4. Исполнительные механизмы — это...</h4>
+      <label><input type="radio" name="q4" value="1"> Механизмы, выполняющие действия</label>
+      <label><input type="radio" name="q4" value="0"> Программы управления</label>
+      <label><input type="radio" name="q4" value="0"> Датчики света</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>5. Что защищает внутренние компоненты робота?</h4>
+      <label><input type="radio" name="q5" value="1"> Корпус</label>
+      <label><input type="radio" name="q5" value="0"> Контроллер</label>
+      <label><input type="radio" name="q5" value="0"> Мотор</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>6. Что произойдет, если отключить источник питания?</h4>
+      <label><input type="radio" name="q6" value="1"> Робот перестанет работать</label>
+      <label><input type="radio" name="q6" value="0"> Робот станет быстрее</label>
+      <label><input type="radio" name="q6" value="0"> Контроллер заработает сильнее</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>7. Как взаимодействуют компоненты робота?</h4>
+      <label><input type="radio" name="q7" value="1"> Датчики передают данные контроллеру, а он управляет моторами</label>
+      <label><input type="radio" name="q7" value="0"> Моторы управляют контроллером</label>
+      <label><input type="radio" name="q7" value="0"> Корпус подает команды датчикам</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>8. Что из этого является примером исполнительного механизма?</h4>
+      <label><input type="radio" name="q8" value="1"> Мотор</label>
+      <label><input type="radio" name="q8" value="0"> Камера</label>
+      <label><input type="radio" name="q8" value="0"> Контроллер</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>9. Что из этого является контроллером?</h4>
+      <label><input type="radio" name="q9" value="1"> Arduino</label>
+      <label><input type="radio" name="q9" value="0"> Батарейка</label>
+      <label><input type="radio" name="q9" value="0"> Колесо</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>10. Зачем роботу датчики?</h4>
+      <label><input type="radio" name="q10" value="1"> Чтобы понимать, что происходит вокруг</label>
+      <label><input type="radio" name="q10" value="0"> Чтобы украшать корпус</label>
+      <label><input type="radio" name="q10" value="0"> Чтобы питать двигатель</label>
+    </div>
+
+    <button onclick="checkQuiz()">Проверить ответы</button>
+    <div id="result"></div>
+  </div>
+</main>
+
+<footer>
+  &copy; 2025 VSchool. Все права защищены.
+</footer>
+
+<script>
+  function checkQuiz() {
+    const totalQuestions = 10;
+    let score = 0;
+    for (let i = 1; i <= totalQuestions; i++) {
+      const options = document.getElementsByName('q'+i);
+      for (const option of options) {
+        if (option.checked) {
+          score += Number(option.value);
+          break;
+        }
+      }
+    }
+    const resultDiv = document.getElementById('result');
+    resultDiv.textContent = `Вы набрали ${score} из ${totalQuestions} правильных ответов.`;
+  }
+</script>
+
+</body>
+</html>
