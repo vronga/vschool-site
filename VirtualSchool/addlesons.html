@@ -39,6 +39,274 @@
     .muted { color:#666; font-size:0.9rem }
   </style>
 </head>
+
+<body>
+  <!-- 🔒 Авторизация -->
+  <div id="authOverlay" aria-hidden="false">
+    <div id="authBox" role="dialog" aria-modal="true">
+      <h2>Авторизация</h2>
+      <input type="text" id="authName" placeholder="Имя" style="margin-top:0.6rem;" />
+      <input type="password" id="authPass" placeholder="Пароль" style="margin-top:0.6rem;" />
+      <div class="controls" style="margin-top:0.8rem;">
+        <button id="loginBtn" class="btn">Войти</button>
+        <button id="demoBtn" class="btn secondary" title="Прим. заполнение">Demo</button>
+      </div>
+      <p id="authError">Неверный пароль</p>
+      <p class="small" style="margin-top:0.6rem">Подсказка: пароль — <code>44191033</code></p>
+    </div>
+  </div>
+
+  <h1>Добавить новый урок</h1>
+
+  <form id="lessonForm">
+    <label for="title">Название урока *</label>
+    <input type="text" id="title" name="title" required />
+
+    <label for="description">Описание</label>
+    <textarea id="description" name="description"></textarea>
+
+    <label for="content">Содержание (HTML разрешён)</label>
+    <textarea id="content" name="content"></textarea>
+
+    <label for="image">URL изображения (опционально)</label>
+    <input type="text" id="image" name="image" placeholder="https://example.com/image.jpg" />
+
+    <label for="video">URL видео (опционально)</label>
+    <input type="text" id="video" name="video" placeholder="https://youtube.com/..." />
+
+    <label for="subject">Предмет *</label>
+    <select id="subject" name="subject" required>
+      <option value="">Выберите предмет</option>
+      <option value="informatics">Информатика</option>
+      <option value="robotics">Робототехника</option>
+      <option value="biology">Биология</option>
+      <option value="geography">География</option>
+    </select>
+
+    <h2 style="margin-top:1rem">Тест к уроку (опционально)</h2>
+    <div id="testQuestionsContainer" class="test-block"></div>
+    <div style="margin-top:0.6rem;">
+      <button type="button" id="addQuestionBtn" class="btn secondary">Добавить вопрос</button>
+    </div>
+
+    <button type="submit" id="saveLessonBtn" class="btn" style="display:block;">Сохранить урок</button>
+  </form>
+
+  <hr />
+
+  <h2>Список уроков по предметам</h2>
+  <div id="lessonsBySubject"></div>
+
+  <!-- ⚙️ Скрипт -->
+  <script>
+    (function(){
+      const CORRECT = '44191033';
+      const STORAGE_KEY = 'vsLessons';
+
+      const authOverlay = document.getElementById('authOverlay');
+      const authPass = document.getElementById('authPass');
+      const loginBtn = document.getElementById('loginBtn');
+      const demoBtn = document.getElementById('demoBtn');
+      const authError = document.getElementById('authError');
+
+      const form = document.getElementById('lessonForm');
+      const questionsContainer = document.getElementById('testQuestionsContainer');
+      const lessonsBySubject = document.getElementById('lessonsBySubject');
+
+      let lessons = [];
+
+      // ========== Helpers ==========
+      const saveLessons = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(lessons));
+      const loadLessons = () => lessons = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      const escapeHtml = t => t?.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])) || '';
+
+      // ========== Авторизация ==========
+      function setAuthOverlay(show){
+        authOverlay.style.display = show ? 'flex' : 'none';
+        authOverlay.setAttribute('aria-hidden', show ? 'false' : 'true');
+      }
+      function showAuthError(){
+        authError.style.display = 'block';
+        const box = document.getElementById('authBox');
+        box.classList.remove('shake');
+        void box.offsetWidth;
+        box.classList.add('shake');
+        setTimeout(()=> authError.style.display = 'none', 2500);
+      }
+      function attemptLogin(){
+        const pass = authPass.value.trim();
+        if (pass === CORRECT) {
+          localStorage.setItem('vschoolAuth','true');
+          setAuthOverlay(false);
+        } else showAuthError();
+      }
+
+      // ========== Тестовые вопросы ==========
+      function createQuestionElement(existing){
+        const div = document.createElement('div');
+        div.className = 'test-question';
+        const qText = existing?.question || '';
+        const answers = existing?.answers || [{text:'', correct:false}, {text:'', correct:false}];
+
+        div.innerHTML = `
+          <label>Вопрос:
+            <input type="text" class="question-text" placeholder="Текст вопроса" required value="${escapeHtml(qText)}" />
+          </label>
+          <div class="answers">
+            <p class="small">Ответы (отметьте правильные):</p>
+            <div class="answers-list"></div>
+            <div style="margin-top:0.4rem; display:flex; gap:0.5rem;">
+              <button type="button" class="btn add-answer-btn secondary">Добавить ответ</button>
+              <button type="button" class="btn remove-question-btn" title="Удалить вопрос">Удалить вопрос</button>
+            </div>
+          </div>
+        `;
+
+        const answersList = div.querySelector('.answers-list');
+        function addAnswerField(ans){
+          const wrap = document.createElement('label');
+          const checked = ans.correct ? 'checked' : '';
+          wrap.innerHTML = `<input type="checkbox" class="answer-correct" ${checked}/> 
+            <input type="text" class="answer-text" placeholder="Ответ" required value="${escapeHtml(ans.text)}"/> 
+            <button type="button" class="btn delete-answer-btn" style="background:#f5f5f5;color:#333;padding:0.18rem 0.45rem;border-radius:6px;border:1px solid #ddd;margin-left:6px;">✕</button>`;
+          wrap.querySelector('.delete-answer-btn').onclick = () => wrap.remove();
+          answersList.appendChild(wrap);
+        }
+        answers.forEach(addAnswerField);
+        div.querySelector('.add-answer-btn').onclick = () => addAnswerField({text:'', correct:false});
+        div.querySelector('.remove-question-btn').onclick = () => div.remove();
+        return div;
+      }
+
+      // ========== Отрисовка уроков ==========
+      function renderLessonsBySubject(){
+        lessonsBySubject.innerHTML = '';
+        if (!lessons.length) {
+          lessonsBySubject.innerHTML = '<p class="muted">Уроки ещё не созданы.</p>';
+          return;
+        }
+        const grouped = {};
+        for (const lesson of lessons) {
+          const subj = lesson.subject || 'other';
+          (grouped[subj] ||= []).push(lesson);
+        }
+        const subjectNames = { informatics:"Информатика", robotics:"Робототехника", biology:"Биология", geography:"География", other:"Прочее" };
+        for (const subject in grouped) {
+          const block = document.createElement('div');
+          block.className = 'subject-block';
+          const header = document.createElement('div');
+          header.className = 'subject-header';
+          header.innerHTML = `<span>${subjectNames[subject] || subject}</span><span class="toggle-icon">&#9660;</span>`;
+          const list = document.createElement('div');
+          list.className = 'subject-lessons';
+
+          grouped[subject].forEach(lesson => {
+            const item = document.createElement('div');
+            item.className = 'lesson-item';
+            item.innerHTML = `
+              <div>
+                <div class="title">${escapeHtml(lesson.title)}</div>
+                ${lesson.description ? `<div class="small">${escapeHtml(lesson.description)}</div>` : ''}
+              </div>
+              <button class="delete-btn">Удалить</button>
+            `;
+            item.querySelector('.delete-btn').onclick = (e) => {
+              e.stopPropagation();
+              if (!confirm('Удалить урок?')) return;
+              lessons = lessons.filter(l => l._id !== lesson._id);
+              saveLessons();
+              renderLessonsBySubject();
+            };
+            item.onclick = () => showLessonPreview(lesson);
+            list.appendChild(item);
+          });
+          header.onclick = () => list.style.display = (list.style.display === 'none') ? 'block' : 'none';
+          block.append(header, list);
+          lessonsBySubject.append(block);
+        }
+      }
+
+      function showLessonPreview(lesson){
+        const overlay = document.createElement('div');
+        overlay.style = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:10000;padding:16px;';
+        const box = document.createElement('div');
+        box.style = 'background:#fff;max-width:900px;width:100%;max-height:90vh;overflow:auto;border-radius:10px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,0.4);';
+        box.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h3>${escapeHtml(lesson.title)}</h3>
+            <button class="btn">Закрыть</button>
+          </div>
+          <p class="small">${escapeHtml(lesson.description)}</p>
+          ${lesson.image ? `<img src="${escapeHtml(lesson.image)}" style="max-width:200px;border-radius:8px;margin-top:8px;">` : ''}
+          <div style="margin-top:12px">${lesson.content}</div>
+        `;
+        overlay.appendChild(box);
+        document.body.appendChild(overlay);
+        box.querySelector('button').onclick = () => overlay.remove();
+        overlay.onclick = e => e.target === overlay && overlay.remove();
+      }
+
+      // ========== Сохранение формы ==========
+      function collectFormData(){
+        const lesson = {
+          _id: 'id_' + Date.now() + '_' + Math.random().toString(36).slice(2,8),
+          title: document.getElementById('title').value.trim(),
+          description: document.getElementById('description').value.trim(),
+          content: document.getElementById('content').value.trim(),
+          image: document.getElementById('image').value.trim(),
+          video: document.getElementById('video').value.trim(),
+          subject: document.getElementById('subject').value || 'other',
+          test: []
+        };
+        const qBlocks = questionsContainer.querySelectorAll('.test-question');
+        for (const q of qBlocks) {
+          const questionText = q.querySelector('.question-text').value.trim();
+          const answers = Array.from(q.querySelectorAll('.answers-list label')).map(l => ({
+            text: l.querySelector('.answer-text').value.trim(),
+            correct: l.querySelector('.answer-correct').checked
+          })).filter(a => a.text);
+          if (questionText && answers.length) lesson.test.push({ question: questionText, answers });
+        }
+        return lesson;
+      }
+
+      // ========== Init ==========
+      document.addEventListener('DOMContentLoaded', () => {
+        loadLessons();
+        renderLessonsBySubject();
+
+        const isAuthed = localStorage.getItem('vschoolAuth') === 'true';
+        setAuthOverlay(!isAuthed);
+
+        authPass.addEventListener('keydown', e => e.key === 'Enter' && attemptLogin());
+        loginBtn.addEventListener('click', attemptLogin);
+        demoBtn.addEventListener('click', () => {
+          document.getElementById('authName').value = 'Teacher';
+          document.getElementById('authPass').value = CORRECT;
+        });
+
+        document.getElementById('addQuestionBtn').addEventListener('click', () => {
+          questionsContainer.appendChild(createQuestionElement());
+        });
+
+        form.addEventListener('submit', e => {
+          e.preventDefault();
+          if (localStorage.getItem('vschoolAuth') !== 'true') {
+            alert('Сначала авторизуйтесь!');
+            setAuthOverlay(true);
+            return;
+          }
+          const lesson = collectFormData();
+          if (!lesson.title) return alert('Введите заголовок урока');
+          lessons.push(lesson);
+          saveLessons();
+          form.reset();
+          questionsContainer.innerHTML = '';
+          renderLessonsBySubject();    .answers input[type="text"] { width: calc(100% - 28px); margin-left: 6px; padding: 0.25rem 0.4rem; font-size:0.95rem; border-radius:6px; border:1px solid #ddd }
+    .controls { display:flex; gap:0.6rem; justify-content:center; flex-wrap:wrap }
+    .muted { color:#666; font-size:0.9rem }
+  </style>
+</head>
 <body>
   <div id="authOverlay" aria-hidden="false">
     <div id="authBox" role="dialog" aria-modal="true">
@@ -1428,6 +1696,7 @@
 
 </body>
 </html>
+
 
 
 
