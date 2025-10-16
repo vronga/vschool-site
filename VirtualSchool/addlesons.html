@@ -2,36 +2,20 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>VSchool – Уроки</title>
+  <title>VSchool — Добавить урок</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body, html {
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #e0ebff, #f7f9ff);
       margin: 0;
       padding: 0;
-      height: 100%;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #e0ebff, #f7f9ff);
       color: #222;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
 
-    a {
-      color: #005bbb;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    /* ---------- HEADER ---------- */
     header {
       background-color: #005bbb;
       color: white;
@@ -39,27 +23,243 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
     }
 
-    header .logo {
-      margin: 0;
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      user-select: none;
-      cursor: default;
+    header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; }
+
+    main {
+      flex: 1;
+      max-width: 800px;
+      width: 100%;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
     }
 
-    nav ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #003d99;
+    }
+
+    form {
       display: flex;
-      gap: 2rem;
-      font-weight: 600;
-      font-size: 1rem;
+      flex-direction: column;
+      gap: 1.2rem;
     }
+
+    label {
+      font-weight: 600;
+      color: #003d99;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1.5px solid #ccc;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #005bbb;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .test-section {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #f0f6ff;
+      border-radius: 10px;
+    }
+
+    .test-question {
+      margin-bottom: 1rem;
+      padding-bottom: 0.7rem;
+      border-bottom: 1px dashed #ccc;
+    }
+
+    .test-question input {
+      display: block;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    .add-question-btn {
+      background: #005bbb;
+      color: white;
+      border: none;
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+      margin-top: 0.5rem;
+    }
+
+    .add-question-btn:hover {
+      background: #003d99;
+    }
+
+    button[type="submit"] {
+      background: #00a86b;
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    button[type="submit"]:hover {
+      background: #008f5e;
+      transform: scale(1.03);
+    }
+
+    .success, .error {
+      text-align: center;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+
+    .success { color: #00a86b; }
+    .error { color: #d33; }
+
+    footer {
+      background: #003d99;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: auto;
+      font-size: 0.9rem;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>VSchool</h1>
+    <nav>
+      <a href="index.html" style="color:white; text-decoration:none; font-weight:600;">Главная</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Добавить новый урок</h2>
+    <form id="lessonForm">
+      <label>Предмет:</label>
+      <select id="subject" required>
+        <option value="">— Выберите предмет —</option>
+        <option value="informatics">Информатика</option>
+        <option value="robotics">Робототехника</option>
+        <option value="biology">Биология</option>
+        <option value="geography">География</option>
+      </select>
+
+      <label>Название урока:</label>
+      <input type="text" id="title" required placeholder="Введите название урока" />
+
+      <label>Краткое описание:</label>
+      <textarea id="description" placeholder="Введите описание..." required></textarea>
+
+      <label>Конспект урока:</label>
+      <textarea id="content" placeholder="Подробный конспект..." required></textarea>
+
+      <label>Ссылка на изображение:</label>
+      <input type="text" id="image" placeholder="https://example.com/image.jpg" />
+
+      <label>Ссылка на видео YouTube:</label>
+      <input type="text" id="video" placeholder="https://www.youtube.com/watch?v=..." />
+
+      <div class="test-section">
+        <h3>Тест к уроку</h3>
+        <div id="questionsContainer"></div>
+        <button type="button" class="add-question-btn" onclick="addQuestion()">+ Добавить вопрос</button>
+      </div>
+
+      <button type="submit">Создать урок</button>
+      <div id="message"></div>
+    </form>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 VSchool. Все права защищены.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseUrl = 'https://oyzumzmidcegpbewhzcm.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95enVtem1pZGNlZ3BiZXdoemNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0OTk5OTYsImV4cCI6MjA3NjA3NTk5Nn0.fndukbDPx_QjU_DqW54oXarqo2d1xru8oWw5yuplLMo';
+    const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+    const form = document.getElementById('lessonForm');
+    const message = document.getElementById('message');
+    const questionsContainer = document.getElementById('questionsContainer');
+
+    function addQuestion() {
+      const div = document.createElement('div');
+      div.className = 'test-question';
+      div.innerHTML = `
+        <label>Вопрос:</label>
+        <input type="text" placeholder="Введите вопрос" required />
+        <label>Ответ:</label>
+        <input type="text" placeholder="Введите правильный ответ" required />
+      `;
+      questionsContainer.appendChild(div);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      message.textContent = '';
+
+      const questions = [];
+      document.querySelectorAll('.test-question').forEach(q => {
+        const inputs = q.querySelectorAll('input');
+        if (inputs[0].value && inputs[1].value) {
+          questions.push({
+            question: inputs[0].value,
+            answer: inputs[1].value
+          });
+        }
+      });
+
+      const { error } = await supabase
+        .from('lessons')
+        .insert([{
+          subject: document.getElementById('subject').value,
+          title: document.getElementById('title').value,
+          description: document.getElementById('description').value,
+          content: document.getElementById('content').value,
+          image: document.getElementById('image').value,
+          video: document.getElementById('video').value,
+          test: questions
+        }]);
+
+      if (error) {
+        message.className = 'error';
+        message.textContent = 'Ошибка при создании урока: ' + error.message;
+      } else {
+        message.className = 'success';
+        message.textContent = 'Урок успешно добавлен!';
+        form.reset();
+        questionsContainer.innerHTML = '';
+      }
+    });
+  </script>
+</body>
+</html>    }
 
     nav ul li a {
       color: white;
@@ -317,3 +517,4 @@
   </script>
 </body>
 </html>
+
