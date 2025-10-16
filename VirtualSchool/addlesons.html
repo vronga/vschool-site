@@ -172,6 +172,305 @@
       <h2>Авторизация</h2>
       <input type="text" id="authName" placeholder="Имя" style="margin-bottom: 1rem; width: 100%; padding: 0.5rem;" />
       <input type="password" id="authPass" placeholder="Пароль" style="margin-bottom: 1rem; width: 100%; padding: 0.5rem;" />
+      <button id="loginBtn" style="padding: 0.5rem 1rem;">Войти</button>
+      <p id="authError" style="color: red; margin-top: 0.5rem; display: none;">Неверный пароль</p>
+    </div>
+  </div>
+
+  <h1>Добавить новый урок</h1>
+  <form id="lessonForm">
+    <label for="title">Название урока *</label>
+    <input type="text" id="title" required />
+    <label for="description">Описание</label>
+    <textarea id="description"></textarea>
+    <label for="content">Содержание (HTML разрешён)</label>
+    <textarea id="content"></textarea>
+    <label for="image">URL изображения (опционально)</label>
+    <input type="text" id="image" placeholder="https://example.com/image.jpg" />
+    <label for="video">URL видео (опционально)</label>
+    <input type="text" id="video" placeholder="https://youtube.com/..." />
+    <label for="subject">Предмет *</label>
+    <select id="subject" required>
+      <option value="">Выберите предмет</option>
+      <option value="informatics">Информатика</option>
+      <option value="robotics">Робототехника</option>
+      <option value="biology">Биология</option>
+      <option value="geography">География</option>
+    </select>
+    <h2>Тест к уроку (опционально)</h2>
+    <div id="testQuestionsContainer" class="test-block"></div>
+    <button type="button" id="addQuestionBtn">Добавить вопрос</button>
+    <br />
+    <button type="submit">Сохранить урок</button>
+  </form>
+  <hr />
+  <h2>Список уроков по предметам</h2>
+  <div id="lessonsBySubject"></div>
+
+  <script>
+    const form = document.getElementById("lessonForm");
+    const questionsContainer = document.getElementById("testQuestionsContainer");
+    const lessonsBySubject = document.getElementById("lessonsBySubject");
+    let lessons = JSON.parse(localStorage.getItem("vsLessons") || "[]");
+
+    function createQuestionElement() {
+      const div = document.createElement("div");
+      div.classList.add("test-question");
+      div.innerHTML = `
+        <label>Вопрос:
+          <input type="text" class="question-text" placeholder="Текст вопроса" required />
+        </label>
+        <div class="answers">
+          <p>Ответы (отметьте правильные):</p>
+          <label><input type="checkbox" class="answer-correct" /><input type="text" class="answer-text" placeholder="Ответ" required /></label>
+          <label><input type="checkbox" class="answer-correct" /><input type="text" class="answer-text" placeholder="Ответ" required /></label>
+        </div>
+        <button type="button" class="remove-question-btn">Удалить вопрос</button>
+      `;
+      div.querySelector(".remove-question-btn").onclick = () => div.remove();
+      return div;
+    }
+
+    document.getElementById("addQuestionBtn").onclick = () => {
+      questionsContainer.appendChild(createQuestionElement());
+    };
+
+    function renderLessonsBySubject() {
+      lessonsBySubject.innerHTML = "";
+      if (lessons.length === 0) {
+        lessonsBySubject.innerHTML = "<p>Уроки ещё не созданы.</p>";
+        return;
+      }
+      const grouped = {};
+      for (const lesson of lessons) {
+        if (!grouped[lesson.subject]) grouped[lesson.subject] = [];
+        grouped[lesson.subject].push(lesson);
+      }
+      const subjectNames = {
+        informatics: "Информатика",
+        robotics: "Робототехника",
+        biology: "Биология",
+        geography: "География"
+      };
+      for (const subject in grouped) {
+        const block = document.createElement("div");
+        block.className = "subject-block";
+        const header = document.createElement("div");
+        header.className = "subject-header";
+        header.innerHTML = `<span>${subjectNames[subject] || subject}</span><span class="toggle-icon">&#9660;</span>`;
+        const list = document.createElement("div");
+        list.className = "subject-lessons";
+        grouped[subject].forEach(lesson => {
+          const item = document.createElement("div");
+          item.className = "lesson-item";
+          item.innerHTML = `<span class="title">${lesson.title}</span><button class="delete-btn">Удалить</button>`;
+          item.querySelector(".delete-btn").onclick = () => {
+            if (confirm(`Удалить урок "${lesson.title}"?`)) {
+              lessons = lessons.filter(l => l !== lesson);
+              localStorage.setItem("vsLessons", JSON.stringify(lessons));
+              renderLessonsBySubject();
+            }
+          };
+          list.appendChild(item);
+        });
+        header.onclick = () => {
+          const visible = list.style.display !== "none";
+          list.style.display = visible ? "none" : "block";
+          header.classList.toggle("collapsed", visible);
+        };
+        block.appendChild(header);
+        block.appendChild(list);
+        lessonsBySubject.appendChild(block);
+      }
+    }
+    renderLessonsBySubject();
+
+    form.onsubmit = e => {
+      e.preventDefault();
+      const lesson = {
+        title: form.title.value.trim(),
+        description: form.description.value.trim(),
+        content: form.content.value.trim(),
+        image: form.image.value.trim(),
+        video: form.video.value.trim(),
+        subject: form.subject.value,
+        test: []
+      };
+      const qBlocks = questionsContainer.querySelectorAll(".test-question");
+      qBlocks.forEach(q => {
+        const questionText = q.querySelector(".question-text").value;
+        const answers = [...q.querySelectorAll(".answers label")].map(label => ({
+          text: label.querySelector(".answer-text").value,
+          correct: label.querySelector(".answer-correct").checked
+        }));
+        lesson.test.push({ question: questionText, answers });
+      });
+      lessons.push(lesson);
+      localStorage.setItem("vsLessons", JSON.stringify(lessons));
+      alert("Урок добавлен!");
+      form.reset();
+      questionsContainer.innerHTML = "";
+      renderLessonsBySubject();
+    };
+
+    const correctPassword = "44191033";
+    function checkAuth() {
+      const pass = document.getElementById("authPass").value;
+      const error = document.getElementById("authError");
+      if (pass === correctPassword) {
+        localStorage.setItem("vschoolAuth", "true");
+        document.getElementById("authOverlay").style.display = "none";
+        error.style.display = "none";
+      } else {
+        error.style.display = "block";
+      }
+    }
+
+    window.onload = () => {
+      const isAuthed = localStorage.getItem("vschoolAuth") === "true";
+      document.getElementById("authOverlay").style.display = isAuthed ? "none" : "flex";
+      document.getElementById("loginBtn").addEventListener("click", checkAuth);
+    };
+  </script>
+</body>
+</html>      background-color: #2078f4;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    button:hover {
+      background-color: #145bb5;
+    }
+    .test-block {
+      margin-top: 2rem;
+      padding: 1rem;
+      border: 1px solid #2078f4;
+      border-radius: 10px;
+      background: #e6f0ff;
+    }
+    .test-question {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #ccc;
+    }
+    .test-question:last-child {
+      border-bottom: none;
+    }
+    .answers label {
+      display: block;
+      margin-left: 1rem;
+      margin-bottom: 0.4rem;
+      cursor: pointer;
+    }
+    .answers input[type="text"] {
+      width: auto;
+      padding: 0.3rem 0.5rem;
+      margin-left: 0.3rem;
+      font-size: 0.95rem;
+    }
+    .remove-question-btn {
+      background: #b00;
+      margin-top: 0.5rem;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.85rem;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+    .remove-question-btn:hover {
+      background: #900;
+    }
+    hr {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      border: none;
+      border-top: 1px solid #ccc;
+    }
+    .subject-block {
+      margin-bottom: 2rem;
+      border: 1px solid #2078f4;
+      border-radius: 10px;
+      background: #e9f1ff;
+    }
+    .subject-header {
+      background: #2078f4;
+      color: white;
+      padding: 0.5rem 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+      border-radius: 10px 10px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .subject-header .toggle-icon {
+      font-weight: normal;
+      font-size: 1.2rem;
+      user-select: none;
+      transition: transform 0.3s ease;
+    }
+    .subject-header.collapsed .toggle-icon {
+      transform: rotate(-90deg);
+    }
+    .subject-lessons {
+      padding: 0.8rem 1rem;
+      display: block;
+    }
+    .lesson-item {
+      padding: 0.6rem;
+      background: #eef4ff;
+      margin-bottom: 0.4rem;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .lesson-item span.title {
+      font-weight: 600;
+      color: #2078f4;
+    }
+    .lesson-item button.delete-btn {
+      background: #d33;
+      border: none;
+      color: white;
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+    .lesson-item button.delete-btn:hover {
+      background: #a00;
+    }
+  </style>
+</head>
+<body>
+  <div id="authOverlay" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  ">
+    <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.3); max-width: 300px; width: 90%; text-align: center;">
+      <h2>Авторизация</h2>
+      <input type="text" id="authName" placeholder="Имя" style="margin-bottom: 1rem; width: 100%; padding: 0.5rem;" />
+      <input type="password" id="authPass" placeholder="Пароль" style="margin-bottom: 1rem; width: 100%; padding: 0.5rem;" />
       <button onclick="checkAuth()" style="padding: 0.5rem 1rem;">Войти</button>
       <p id="authError" style="color: red; margin-top: 0.5rem; display: none;">Неверный пароль</p>
     </div>
@@ -807,4 +1106,5 @@
 
 </body>
 </html>
+
 
