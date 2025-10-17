@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>VSchool — Биология: Клетка</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f9f4;
+      color: #222;
+    }
+    header {
+      background-color: #2b9348;
+      color: white;
+      padding: 1rem 2rem;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    nav {
+      background-color: #1c6b37;
+      padding: 0.5rem 2rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-right: 1.5rem;
+      font-weight: 600;
+    }
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2, h3 {
+      color: #2b9348;
+    }
+    p, li {
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+    model-viewer {
+      width: 100%;
+      height: 400px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      margin: 1rem 0;
+    }
+    .quiz {
+      margin-top: 2rem;
+    }
+    .quiz-question {
+      margin-bottom: 1rem;
+    }
+    .quiz-question h4 {
+      margin-bottom: 0.5rem;
+    }
+    .quiz-question label {
+      display: block;
+      margin-left: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    #result {
+      margin-top: 1.5rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    button {
+      background-color: #2b9348;
+      color: white;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    button:hover {
+      background-color: #1c6b37;
+    }
+  </style>
+</head>
+<body>
+
+<header>VSchool — Биология: Клетка</header>
+<nav>
+  <a href="../lessons.html">Назад к урокам</a>
+  <a href="../index.html">Главная</a>
+</nav>
+
+<main>
+  <h1>Урок 1: Клетка — основа жизни</h1>
+  <p>Добро пожаловать! Сегодня мы узнаем, что такое клетка, из чего она состоит, и почему она — основа живого.</p>
+
+  <h2>Что такое клетка?</h2>
+  <p><strong>Клетка</strong> — это самая маленькая единица жизни. Все живые организмы состоят из клеток: растения, животные, бактерии и даже ты!</p>
+
+  <h2>Основные части клетки:</h2>
+  <ul>
+    <li><strong>Мембрана</strong> — оболочка, которая защищает клетку.</li>
+    <li><strong>Цитоплазма</strong> — внутренняя "жидкость", в которой находятся все органоиды.</li>
+    <li><strong>Ядро</strong> — центр управления, в нём ДНК.</li>
+    <li><strong>Митохондрии</strong> — вырабатывают энергию.</li>
+    <li><strong>Рибосомы</strong> — "фабрики" по созданию белков.</li>
+  </ul>
+
+  <h2>3D модель клетки:</h2>
+  <model-viewer 
+    src="https://cdn.jsdelivr.net/gh/vronga/vschool-3d/human_cell.glb"
+    alt="3D модель клетки"
+    auto-rotate
+    camera-controls
+    shadow-intensity="1">
+  </model-viewer>
+
+  <h2>Чем отличаются растительные и животные клетки?</h2>
+  <ul>
+    <li><strong>Растительные клетки</strong> имеют <em>хлоропласты</em> (для фотосинтеза) и <em>жёсткую клеточную стенку</em>.</li>
+    <li><strong>Животные клетки</strong> гибкие, без хлоропластов и клеточной стенки.</li>
+  </ul>
+
+  <h2>3D модель ДНК:</h2>
+  <model-viewer 
+    src="https://raw.githubusercontent.com/vronga/vschool-3d/main/stylized_simply_visualization_of_dna.glb"
+    alt="3D модель ДНК"
+    auto-rotate
+    camera-controls
+    shadow-intensity="1">
+  </model-viewer>
+
+  <h2>Задания для тебя:</h2>
+  <ul>
+    <li>Нарисуй схематично животную и растительную клетку.</li>
+    <li>Подпиши 5 основных частей клетки.</li>
+    <li>Придумай сравнение клетки с городом. Кто в клетке выполняет роль "электростанции", "почты", "мусорщика"?</li>
+  </ul>
+
+  <h2>Проверим себя:</h2>
+  <div class="quiz" id="quiz">
+    <div class="quiz-question">
+      <h4>1. Что такое клетка?</h4>
+      <label><input type="radio" name="q1" value="0"> Орган тела</label>
+      <label><input type="radio" name="q1" value="1"> Основная единица живого</label>
+      <label><input type="radio" name="q1" value="0"> Молекула</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>2. Где находится ДНК?</h4>
+      <label><input type="radio" name="q2" value="0"> В цитоплазме</label>
+      <label><input type="radio" name="q2" value="1"> В ядре</label>
+      <label><input type="radio" name="q2" value="0"> В мембране</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>3. Что делает митохондрия?</h4>
+      <label><input type="radio" name="q3" value="1"> Производит энергию</label>
+      <label><input type="radio" name="q3" value="0"> Защищает клетку</label>
+      <label><input type="radio" name="q3" value="0"> Управляет клеткой</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>4. Какой органоид есть только у растений?</h4>
+      <label><input type="radio" name="q4" value="1"> Хлоропласт</label>
+      <label><input type="radio" name="q4" value="0"> Ядро</label>
+      <label><input type="radio" name="q4" value="0"> Рибосома</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>5. Что делает мембрана?</h4>
+      <label><input type="radio" name="q5" value="1"> Защищает клетку и регулирует, что входит и выходит</label>
+      <label><input type="radio" name="q5" value="0"> Производит белки</label>
+      <label><input type="radio" name="q5" value="0"> Делит клетку пополам</label>
+    </div>
+
+    <button onclick="checkAnswers()">Проверить ответы</button>
+    <div id="result"></div>
+  </div>
+</main>
+
+<script>
+  function checkAnswers() {
+    const correctAnswers = ["1", "1", "1", "1", "1"];
+    let score = 0;
+    for (let i = 1; i <= 5; i++) {
+      const radios = document.getElementsByName("q" + i);
+      for (const radio of radios) {
+        if (radio.checked && radio.value === "1") {
+          score++;
+        }
+      }
+    }
+    const result = document.getElementById("result");
+    result.innerText = `Правильных ответов: ${score} из 5. ${score >= 4 ? "Отличный результат!" : "Попробуй ещё раз!"}`;
+  }
+</script>
+
+<footer style="background:#2b9348;color:white;text-align:center;padding:1rem;margin-top:2rem;">
+  &copy; 2025 VSchool. Все права защищены.
+</footer>
+
+</body>
+</html>

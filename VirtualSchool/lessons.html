@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>VSchool – Уроки</title>
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #e0ebff, #f7f9ff);
+    color: #222;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  a {
+    color: #005bbb;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* ---------- HEADER ---------- */
+  header {
+    background-color: #005bbb;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  header .logo {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    user-select: none;
+    cursor: default;
+  }
+
+  nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 2rem;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  nav ul li a {
+    color: white;
+    transition: color 0.3s ease;
+  }
+
+  nav ul li a:hover {
+    color: #ffcc00;
+  }
+
+  /* ---------- LESSONS SECTION ---------- */
+  main.lessons-container {
+    flex: 1;
+    display: flex;
+    padding: 2rem 3rem;
+    gap: 2rem;
+    background-color: #f0f4ff;
+    box-sizing: border-box;
+  }
+
+  aside.subjects-menu {
+    width: 240px;
+    background-color: #e6ecff;
+    border-radius: 12px;
+    padding: 1.5rem 1.2rem;
+    overflow-y: auto;
+    height: calc(100vh - 124px);
+    box-sizing: border-box;
+    box-shadow: inset 2px 2px 8px rgba(0,0,0,0.05);
+    user-select: none;
+  }
+
+  aside.subjects-menu h3 {
+    margin-top: 0;
+    margin-bottom: 1.2rem;
+    color: #003d99;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  aside.subjects-menu button {
+    width: 100%;
+    background-color: #005bbb;
+    border: none;
+    color: white;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.8rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    font-weight: 700;
+    box-shadow: 0 3px 6px rgba(0,91,187,0.4);
+    user-select: none;
+  }
+
+  aside.subjects-menu button:hover,
+  aside.subjects-menu button:focus {
+    background-color: #003d99;
+    box-shadow: 0 5px 12px rgba(0,61,153,0.7);
+    outline: none;
+  }
+
+  .lessons-content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 1.8rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 124px);
+    padding-right: 1rem;
+    scroll-behavior: smooth;
+  }
+
+  .lesson-box {
+    border: 1.5px solid #ccc;
+    border-radius: 14px;
+    background-color: white;
+    overflow: hidden;
+    box-shadow: 0 3px 9px rgba(0,0,0,0.07);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    height: 260px;
+    user-select: none;
+  }
+
+  .lesson-box:hover {
+    transform: scale(1.06);
+    box-shadow: 0 9px 22px rgba(0,0,0,0.18);
+    border-color: #005bbb;
+  }
+
+  .lesson-box img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-bottom: 1px solid #ddd;
+    user-select: none;
+    pointer-events: none;
+    transition: transform 0.3s ease;
+  }
+
+  .lesson-box:hover img {
+    transform: scale(1.05);
+  }
+
+  .lesson-info {
+    padding: 1rem 1.2rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .lesson-info h4 {
+    margin: 0 0 0.6rem 0;
+    font-size: 1.25rem;
+    color: #005bbb;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .lesson-info p {
+    margin: 0;
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.3;
+    font-weight: 500;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    background-color: #003d99;
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    font-size: 0.9rem;
+    box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* ---------- SCROLLBARS ---------- */
+  .lessons-content::-webkit-scrollbar,
+  aside.subjects-menu::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .lessons-content::-webkit-scrollbar-thumb,
+  aside.subjects-menu::-webkit-scrollbar-thumb {
+    background-color: #005bbb88;
+    border-radius: 10px;
+  }
+
+  .lessons-content::-webkit-scrollbar-track,
+  aside.subjects-menu::-webkit-scrollbar-track {
+    background-color: #e6ecff;
+  }
+
+  @media (max-width: 600px) {
+    nav ul {
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>
+
+</head>
+<body>
+  <div class="wrapper">
+    <header>
+      <h1 class="logo">VSchool</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="lessons.html">Уроки</a></li>
+          <li><a href="controls.html">Контрольные</a></li>
+          <li><a href="about.html">О нас</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+          <li><a href="models.html">3D модели</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="lessons-container">
+      <div class="lessons-content">
+        <!-- Информатика Урок 1 -->
+        <a href="lessons/informLesson1.html" class="lesson-box" data-subject="informatics">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiHlWvAddzd7tWmyyyF2tArqUvbUGIFo6bYg&s?text=Информатика" alt="Информатика" />
+          <div class="lesson-info">
+            <h4>Урок 1: Основы алгоритмов</h4>
+            <p>Что такое алгоритмы и как они работают.</p>
+          </div>
+        </a>
+        <!-- Информатика Урок 2 -->
+        <a href="lessons/informLesson2.html" class="lesson-box" data-subject="informatics">
+          <img src="https://lh5.googleusercontent.com/proxy/w2IPp3F7mzBlY7ygkccosI0cJezwdouwkLnWkcoAqoHi6weHEjwzpqkYsBWbNUAuY0a-DpqhJXUY6wDFWuteWbBMMm28Af40rY_v4scmF2EUjUJqFA" alt="Информатика" />
+          <div class="lesson-info">
+            <h4>Урок 2: Типы алгоритмов</h4>
+            <p>Линейные, ветвящиеся и циклические алгоритмы.</p>
+          </div>
+        </a>
+        <!-- Информатика Урок 3 -->
+        <a href="lessons/informLesson3.html" class="lesson-box" data-subject="informatics">
+          <img src="https://media.proglib.io/wp-uploads/2019/02/algorithms_landlord-FINAL.png" alt="Информатика" />
+          <div class="lesson-info">
+            <h4>Урок 3: Ветвления в алгоритмах</h4>
+            <p>Условные операторы и ветвления в алгоритмах</p>
+          </div>
+        </a>
+        <!-- Информатика Урок 4 -->
+        <a href="lessons/informLesson4.html" class="lesson-box" data-subject="informatics">
+          <img src="https://www.shutterstock.com/image-vector/image-illustration-input-output-by-260nw-1443348605.jpg" alt="Информатика" />
+          <div class="lesson-info">
+            <h4>Урок 4: Циклы и повторения в алгоритмах</h4>
+            <p>Что такое циклы и зачем нужны повторения в алгоритмах.</p>
+          </div>
+        </a>
+        <!-- Информатика Урок 5 -->
+        <a href="lessons/informLesson5.html" class="lesson-box" data-subject="informatics">
+          <img src="https://www.shutterstock.com/image-vector/image-illustration-research-development-trial-260nw-2136157291.jpg" alt="Информатика" />
+          <div class="lesson-info">
+            <h4>Урок 5: Алгоритмы с условиями и циклы</h4>
+            <p>Как использовать условия и циклы для построения сложных алгоритмов.</p>
+          </div>
+        </a>
+
+        <!-- Робототехника урок 1 -->
+        <a href="lessons/roboLesson1.html" class="lesson-box hidden" data-subject="robotics">
+          <img src="https://cdn-icons-png.flaticon.com/512/4413/4413483.png" alt="Робототехника" />
+          <div class="lesson-info">
+            <h4>Урок 1: Что такое робототехника?</h4>
+            <p>Общее понимание робототехники, её история и применение в современном мире.</p>
+          </div>
+        </a>
+        <!--Робототехника урок 2-->
+        <a href="lessons/roboLesson2.html" class="lesson-box hidden" data-subject="robotics">
+          <img src="https://cdn-icons-png.flaticon.com/512/2623/2623706.png" alt="Робототехника" />
+          <div class="lesson-info">
+            <h4>Урок 2: Основные компоненты робота</h4>
+            <p>Обзор ключевых частей робота и их функций.</p>
+          </div>
+        </a>
+        <!--Робототехника урок 3-->
+        <a href="lessons/roboLesson3.html" class="lesson-box hidden" data-subject="robotics">
+          <img src="https://avatars.mds.yandex.net/i?id=5da45497a8a596fe334a8aaba358bc4a0d1d0980-5276366-images-thumbs&n=13" alt="Робототехника" />
+          <div class="lesson-info">
+            <h4>Урок 3: Типы роботов </h4>
+            <p>Типы роботов. Какие есть роботы?</p>
+          </div>
+        </a>
+        <!--Робототехника урок 4-->
+        <a href="lessons/roboLesson4.html" class="lesson-box hidden" data-subject="robotics">
+          <img src="https://img.freepik.com/free-vector/robot-character-constructor-set-illustration_23-2150287931.jpg?semt=ais_hybrid&w=740&q=80" alt="Робототехника" />
+          <div class="lesson-info">
+            <h4>Урок 4: Датчики в робототехнике </h4>
+            <p>Что такое датчики?</p>
+          </div>
+        </a>
+        <!--Робототехника урок 5-->
+        <a href="lessons/roboLesson5.html" class="lesson-box hidden" data-subject="robotics">
+          <img src="https://i.pinimg.com/474x/59/5e/0b/595e0b3d9df077f35bd067e529acf7c1.jpg" alt="Робототехника" />
+          <div class="lesson-info">
+            <h4>Урок 5: Моторы и приводы в робототехнике </h4>
+            <p>Моторы и приводы.</p>
+          </div>
+        </a>
+
+        <!-- Биология -->
+        <a href="lessons/bioLesson1.html" class="lesson-box hidden" data-subject="biology">
+          <img src="https://foni.papik.pro/uploads/posts/2024-10/foni-papik-pro-j1ky-p-kartinki-kletka-biologiya-na-prozrachnom-f-6.png" alt="Биология" />
+          <div class="lesson-info">
+            <h4>Урок 1: Клетка</h4>
+            <p>Основные части клетки и их функции. Зачем нам биология?</p>
+          </div>
+        </a>
+
+        <!-- География -->
+        <a href="lessons/geoLesson1.html" class="lesson-box hidden" data-subject="geography">
+          <img src="https://via.placeholder.com/180x120?text=География" alt="География" />
+          <div class="lesson-info">
+            <h4>Урок 1: Карты и координаты</h4>
+            <p>Учимся читать карты и понимать, где мы находимся в мире.</p>
+          </div>
+        </a>
+      </div>
+
+      <aside class="subjects-menu">
+        <h3>Предметы</h3>
+        <button onclick="showSubject('informatics')">Информатика</button>
+        <button onclick="showSubject('robotics')">Робототехника</button>
+        <button onclick="showSubject('biology')">Биология</button>
+        <button onclick="showSubject('geography')">География</button>
+      </aside>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 VSchool. Все права защищены.</p>
+    </footer>
+  </div>
+
+  <script>
+  function loadLocalLessons() {
+    const container = document.querySelector('.lessons-content');
+    if (!container) return;
+
+    const lessons = JSON.parse(localStorage.getItem('lessons') || '[]');
+
+    if (lessons.length === 0) return; // ничего не добавляем, если нет доп. уроков
+
+    lessons.forEach((lesson, index) => {
+      const a = document.createElement('a');
+      a.href = `lesson.html?id=${lesson.id || index}`;
+      a.className = 'lesson-box';
+      a.dataset.subject = lesson.subject || 'informatics';
+      a.dataset.id = lesson.id || index;
+
+      a.innerHTML = `
+        <img src="${lesson.image || 'https://via.placeholder.com/300x200?text=VSchool'}" alt="${lesson.subject || 'lesson'}" />
+        <div class="lesson-info">
+          <h4>${lesson.title}</h4>
+          <p>${lesson.description}</p>
+        </div>
+      `;
+
+      container.appendChild(a);
+    });
+  }
+
+  function showSubject(subjectId) {
+    const lessons = document.querySelectorAll('.lesson-box');
+    lessons.forEach(lesson => {
+      // Скрываем всё
+      lesson.classList.add('hidden');
+    });
+
+    // Показываем только нужный предмет
+    const subjectLessons = document.querySelectorAll(`.lesson-box[data-subject="${subjectId}"]`);
+    subjectLessons.forEach(lesson => {
+      lesson.classList.remove('hidden');
+    });
+  }
+
+  window.addEventListener('load', () => {
+    // НЕ очищаем .innerHTML! Оставляем HTML-уроки
+    loadLocalLessons(); // Добавляем к ним локальные
+    showSubject('informatics');
+  });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Информатика – Урок 1: Основы алгоритмов</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0; background: #f0f4ff; color: #222;
+      min-height: 100vh; display: flex; flex-direction: column;
+    }
+    header {
+      background-color: #005bbb;
+      color: white;
+      padding: 1rem 2rem;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    nav {
+      background-color: #003d99;
+      padding: 0.5rem 2rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-right: 1.5rem;
+      font-weight: 600;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      flex: 1;
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2, h3 {
+      color: #005bbb;
+      margin-top: 1.5rem;
+    }
+    p {
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 1rem 0;
+      border: 1px solid #ccc;
+    }
+    footer {
+      background-color: #005bbb;
+      color: white;
+      text-align: center;
+      padding: 1rem 2rem;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    /* Тест */
+    .quiz {
+      margin-top: 2rem;
+    }
+    .quiz-question {
+      margin-bottom: 1rem;
+    }
+    .quiz-question h4 {
+      margin-bottom: 0.5rem;
+    }
+    .quiz-question label {
+      display: block;
+      margin-left: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    #result {
+      margin-top: 1.5rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    button {
+      background-color: #005bbb;
+      color: white;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    button:hover {
+      background-color: #003d99;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  VSchool — Информатика: Урок 1
+</header>
+
+<nav>
+  <a href="../lessons.html">Назад к урокам</a>
+  <a href="../index.html">Главная</a>
+</nav>
+
+<main>
+<main>
+  <h1>Урок 1: Основы алгоритмов</h1>
+
+  <p>Привет! Добро пожаловать на первый урок по информатике. Сегодня мы узнаем, что такое <strong>алгоритм</strong>, зачем он нужен и как он используется в реальной жизни и программировании.</p>
+
+  <h2>Что такое алгоритм?</h2>
+  <p><strong>Алгоритм</strong> — это точная последовательность шагов, которую нужно выполнить, чтобы решить определённую задачу.</p>
+  <p>Пример из жизни: если ты хочешь приготовить бутерброд, ты следуешь определённым действиям:</p>
+  <ul>
+    <li>Взять хлеб.</li>
+    <li>Намазать масло.</li>
+    <li>Положить сыр или колбасу.</li>
+    <li>Закрыть вторым ломтиком хлеба.</li>
+  </ul>
+  <p>Это и есть алгоритм — понятный, пошаговый план действий.</p>
+
+  <h2>Где мы встречаем алгоритмы?</h2>
+  <p>Алгоритмы окружают нас везде, даже если мы этого не замечаем:</p>
+  <ul>
+    <li>Когда ты чистишь зубы — ты следуешь определённой последовательности.</li>
+    <li>Когда играешь в компьютерную игру — персонажи действуют по алгоритмам.</li>
+    <li>Когда открываешь телефон — внутри уже работают алгоритмы безопасности, загрузки и интерфейса.</li>
+  </ul>
+
+  <h2>Алгоритмы в программировании</h2>
+  <p>Компьютер — это устройство, которое не умеет "думать", как человек. Он выполняет только то, что мы ему скажем. Поэтому мы составляем <strong>алгоритмы</strong>, чтобы объяснить компьютеру, что именно он должен делать, в каком порядке и при каких условиях.</p>
+  <p>Например:</p>
+  <pre style="background:#f0f0f0;padding:1rem;border-radius:8px;">Алгоритм: Сложить два числа
+1. Получить первое число.
+2. Получить второе число.
+3. Сложить два числа.
+4. Показать результат.</pre>
+
+  <h2>Какие бывают виды алгоритмов?</h2>
+  <ul>
+    <li><strong>Линейные</strong> — выполняются шаг за шагом.</li>
+    <li><strong>Разветвляющиеся</strong> — содержат "если...то..." (условия).</li>
+    <li><strong>Циклические</strong> — повторяют действия много раз (циклы).</li>
+  </ul>
+
+  <p>Это основные виды, с которыми ты будешь сталкиваться при программировании.</p>
+
+  <h2>Что такое блок-схема?</h2>
+  <p><strong>Блок-схема</strong> — это визуальное представление алгоритма. Каждый шаг изображается в виде геометрической фигуры:</p>
+  <ul>
+    <li>Прямоугольник — действие (например, "сложить числа").</li>
+    <li>Ромб — условие (например, "число больше 10?").</li>
+    <li>Овал — начало или конец.</li>
+  </ul>
+
+  <h2>Живой пример: как составить алгоритм для кипячения воды</h2>
+  <p>Допустим, тебе нужно закипятить воду в чайнике:</p>
+  <ol>
+    <li>Поставить чайник на подставку.</li>
+    <li>Налить воду.</li>
+    <li>Включить чайник.</li>
+    <li>Ждать до щелчка.</li>
+    <li>Выключить чайник (если нужно).</li>
+  </ol>
+  <p>Если ты перепутаешь шаги (например, сначала включишь, а потом нальёшь воду) — алгоритм не сработает. Это как баг в программе!</p>
+
+  <h2>Задание для тебя:</h2>
+  <p>Попробуй составить алгоритм для одного из следующих действий:</p>
+  <ul>
+    <li>Как ты собираешься в школу.</li>
+    <li>Как делаешь домашнее задание.</li>
+    <li>Как запускаешь любимую игру.</li>
+  </ul>
+  <p>Запиши каждый шаг отдельно. Можешь даже попробовать нарисовать блок-схему на листочке.</p>
+
+  <h2>На следующем уроке...</h2>
+  <p>Мы начнём разбирать, как <strong>записывать алгоритмы в виде блок-схем</strong> и как применять условия и циклы.</p>
+
+  <p><em>Готов перейти к проверке своих знаний? Попробуй пройти тест ниже!</em></p>
+
+  <h2>Проверим себя!</h2>
+  <div class="quiz" id="quiz">
+    <div class="quiz-question">
+      <h4>1. Что такое алгоритм?</h4>
+      <label><input type="radio" name="q1" value="0"> Картинка</label>
+      <label><input type="radio" name="q1" value="1"> Последовательность действий</label>
+      <label><input type="radio" name="q1" value="0"> Программа на компьютере</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>2. Кто может быть исполнителем?</h4>
+      <label><input type="radio" name="q2" value="1"> Человек или робот</label>
+      <label><input type="radio" name="q2" value="0"> Только компьютер</label>
+      <label><input type="radio" name="q2" value="0"> Только человек</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>3. Что такое ветвление?</h4>
+      <label><input type="radio" name="q3" value="1"> Разные пути в алгоритме</label>
+      <label><input type="radio" name="q3" value="0"> Повторение шагов</label>
+      <label><input type="radio" name="q3" value="0"> Ошибка</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>4. Что делает цикл?</h4>
+      <label><input type="radio" name="q4" value="0"> Прерывает алгоритм</label>
+      <label><input type="radio" name="q4" value="1"> Повторяет шаги</label>
+      <label><input type="radio" name="q4" value="0"> Проверяет ошибки</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>5. Блок-схема — это...</h4>
+            <label><input type="radio" name="q5" value="0"> Игровая форма</label>
+      <label><input type="radio" name="q5" value="1"> Схематичное изображение алгоритма</label>
+      <label><input type="radio" name="q5" value="0"> Рисунок</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>6. Что делает исполнитель?</h4>
+      <label><input type="radio" name="q6" value="1"> Выполняет команды</label>
+      <label><input type="radio" name="q6" value="0"> Пишет алгоритмы</label>
+      <label><input type="radio" name="q6" value="0"> Смотрит на блок-схему</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>7. Что произойдёт, если нарушить порядок шагов алгоритма?</h4>
+      <label><input type="radio" name="q7" value="0"> Алгоритм станет быстрее</label>
+      <label><input type="radio" name="q7" value="1"> Алгоритм может не сработать</label>
+      <label><input type="radio" name="q7" value="0"> Ничего не произойдёт</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>8. Что такое команда?</h4>
+      <label><input type="radio" name="q8" value="1"> Отдельное действие в алгоритме</label>
+      <label><input type="radio" name="q8" value="0"> Игра</label>
+      <label><input type="radio" name="q8" value="0"> Кнопка</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>9. Что такое цикл в алгоритме?</h4>
+      <label><input type="radio" name="q9" value="1"> Повторение действий</label>
+      <label><input type="radio" name="q9" value="0"> Переход к другому алгоритму</label>
+      <label><input type="radio" name="q9" value="0"> Ошибка</label>
+    </div>
+
+    <div class="quiz-question">
+      <h4>10. Что важно при создании алгоритма?</h4>
+      <label><input type="radio" name="q10" value="1"> Чёткость и последовательность</label>
+      <label><input type="radio" name="q10" value="0"> Красота</label>
+      <label><input type="radio" name="q10" value="0"> Сложность</label>
+    </div>
+
+    <button onclick="checkAnswers()">Проверить ответы</button>
+    <div id="result"></div>
+  </div>
+
+</main>
+
+<footer>
+  &copy; 2025 VSchool. Все права защищены.
+</footer>
+
+<script>
+  function checkAnswers() {
+    const correctAnswers = ["1","1","1","1","1","1","1","1","1","1"];
+    let score = 0;
+
+    for (let i = 1; i <= 10; i++) {
+      const radios = document.getElementsByName("q" + i);
+      for (const radio of radios) {
+        if (radio.checked && radio.value === "1") {
+          score++;
+        }
+      }
+    }
+
+    const result = document.getElementById("result");
+    result.innerText = `Вы ответили правильно на ${score} из 10 вопросов. ${score >= 7 ? "Отлично!" : "Попробуй ещё раз!"}`;
+  }
+</script>
+
+</body>
+</html>
